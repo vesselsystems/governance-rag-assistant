@@ -1,0 +1,331 @@
+{
+  "metrics": {
+    "questions": 11.0,
+    "answerable_questions": 9.0,
+    "unanswerable_questions": 2.0,
+    "hit_at_k": 1.0,
+    "mean_reciprocal_rank": 1.0,
+    "citation_evaluated_questions": 9.0,
+    "citation_hit_at_k": 1.0,
+    "unanswerable_no_evidence_rate": 1.0,
+    "case_pass_rate": 1.0,
+    "ranked_answerable_questions": 9.0,
+    "by_split": {
+      "dev": {
+        "questions": 5.0,
+        "answerable_questions": 5.0,
+        "unanswerable_questions": 0.0,
+        "hit_at_k": 1.0,
+        "mean_reciprocal_rank": 1.0,
+        "citation_evaluated_questions": 5.0,
+        "citation_hit_at_k": 1.0,
+        "unanswerable_no_evidence_rate": 0.0,
+        "case_pass_rate": 1.0,
+        "ranked_answerable_questions": 5.0
+      },
+      "held_out": {
+        "questions": 6.0,
+        "answerable_questions": 4.0,
+        "unanswerable_questions": 2.0,
+        "hit_at_k": 1.0,
+        "mean_reciprocal_rank": 1.0,
+        "citation_evaluated_questions": 4.0,
+        "citation_hit_at_k": 1.0,
+        "unanswerable_no_evidence_rate": 1.0,
+        "case_pass_rate": 1.0,
+        "ranked_answerable_questions": 4.0
+      }
+    }
+  },
+  "rows": [
+    {
+      "id": "dev-01",
+      "split": "dev",
+      "question": "What should a project record about the data it uses?",
+      "answerable": true,
+      "expected_source": "ai_data_governance_policy.md",
+      "expected_sources": [
+        "ai_data_governance_policy.md"
+      ],
+      "expected_citations": [
+        "[ai_data_governance_policy.md#0]"
+      ],
+      "retrieved_sources": [
+        "ai_data_governance_policy.md",
+        "model_risk_review_playbook.md",
+        "model_risk_review_playbook.md"
+      ],
+      "retrieved_citations": [
+        "[ai_data_governance_policy.md#0]",
+        "[model_risk_review_playbook.md#1]",
+        "[model_risk_review_playbook.md#0]"
+      ],
+      "hit_at_k": true,
+      "citation_hit_at_k": true,
+      "rank": 1,
+      "citation_rank": 1,
+      "no_evidence": false,
+      "passed": true
+    },
+    {
+      "id": "dev-02",
+      "split": "dev",
+      "question": "Which metrics and checks belong in a model review?",
+      "answerable": true,
+      "expected_source": "model_risk_review_playbook.md",
+      "expected_sources": [
+        "model_risk_review_playbook.md"
+      ],
+      "expected_citations": [
+        "[model_risk_review_playbook.md#0]"
+      ],
+      "retrieved_sources": [
+        "model_risk_review_playbook.md",
+        "incident_response_guide.md",
+        "ai_data_governance_policy.md"
+      ],
+      "retrieved_citations": [
+        "[model_risk_review_playbook.md#0]",
+        "[incident_response_guide.md#0]",
+        "[ai_data_governance_policy.md#1]"
+      ],
+      "hit_at_k": true,
+      "citation_hit_at_k": true,
+      "rank": 1,
+      "citation_rank": 1,
+      "no_evidence": false,
+      "passed": true
+    },
+    {
+      "id": "dev-03",
+      "split": "dev",
+      "question": "What should the team do when a system exposes restricted information?",
+      "answerable": true,
+      "expected_source": "incident_response_guide.md",
+      "expected_sources": [
+        "incident_response_guide.md"
+      ],
+      "expected_citations": [
+        "[incident_response_guide.md#0]"
+      ],
+      "retrieved_sources": [
+        "incident_response_guide.md",
+        "ai_data_governance_policy.md",
+        "ai_data_governance_policy.md"
+      ],
+      "retrieved_citations": [
+        "[incident_response_guide.md#0]",
+        "[ai_data_governance_policy.md#1]",
+        "[ai_data_governance_policy.md#0]"
+      ],
+      "hit_at_k": true,
+      "citation_hit_at_k": true,
+      "rank": 1,
+      "citation_rank": 1,
+      "no_evidence": false,
+      "passed": true
+    },
+    {
+      "id": "dev-04",
+      "split": "dev",
+      "question": "How should sensitive fields be handled during development?",
+      "answerable": true,
+      "expected_source": "ai_data_governance_policy.md",
+      "expected_sources": [
+        "ai_data_governance_policy.md"
+      ],
+      "expected_citations": [
+        "[ai_data_governance_policy.md#1]"
+      ],
+      "retrieved_sources": [
+        "ai_data_governance_policy.md",
+        "ai_data_governance_policy.md",
+        "incident_response_guide.md"
+      ],
+      "retrieved_citations": [
+        "[ai_data_governance_policy.md#1]",
+        "[ai_data_governance_policy.md#0]",
+        "[incident_response_guide.md#0]"
+      ],
+      "hit_at_k": true,
+      "citation_hit_at_k": true,
+      "rank": 1,
+      "citation_rank": 1,
+      "no_evidence": false,
+      "passed": true
+    },
+    {
+      "id": "dev-05",
+      "split": "dev",
+      "question": "What belongs in an approval record?",
+      "answerable": true,
+      "expected_source": "model_risk_review_playbook.md",
+      "expected_sources": [
+        "model_risk_review_playbook.md"
+      ],
+      "expected_citations": [
+        "[model_risk_review_playbook.md#1]"
+      ],
+      "retrieved_sources": [
+        "model_risk_review_playbook.md",
+        "model_risk_review_playbook.md",
+        "ai_data_governance_policy.md"
+      ],
+      "retrieved_citations": [
+        "[model_risk_review_playbook.md#1]",
+        "[model_risk_review_playbook.md#0]",
+        "[ai_data_governance_policy.md#0]"
+      ],
+      "hit_at_k": true,
+      "citation_hit_at_k": true,
+      "rank": 1,
+      "citation_rank": 1,
+      "no_evidence": false,
+      "passed": true
+    },
+    {
+      "id": "heldout-01",
+      "split": "held_out",
+      "question": "Which details belong in an AI project data inventory?",
+      "answerable": true,
+      "expected_source": "ai_data_governance_policy.md",
+      "expected_sources": [
+        "ai_data_governance_policy.md"
+      ],
+      "expected_citations": [
+        "[ai_data_governance_policy.md#0]"
+      ],
+      "retrieved_sources": [
+        "ai_data_governance_policy.md",
+        "model_risk_review_playbook.md",
+        "incident_response_guide.md"
+      ],
+      "retrieved_citations": [
+        "[ai_data_governance_policy.md#0]",
+        "[model_risk_review_playbook.md#0]",
+        "[incident_response_guide.md#0]"
+      ],
+      "hit_at_k": true,
+      "citation_hit_at_k": true,
+      "rank": 1,
+      "citation_rank": 1,
+      "no_evidence": false,
+      "passed": true
+    },
+    {
+      "id": "heldout-02",
+      "split": "held_out",
+      "question": "What should reviewers examine for feature leakage and robustness?",
+      "answerable": true,
+      "expected_source": "model_risk_review_playbook.md",
+      "expected_sources": [
+        "model_risk_review_playbook.md"
+      ],
+      "expected_citations": [
+        "[model_risk_review_playbook.md#0]"
+      ],
+      "retrieved_sources": [
+        "model_risk_review_playbook.md"
+      ],
+      "retrieved_citations": [
+        "[model_risk_review_playbook.md#0]"
+      ],
+      "hit_at_k": true,
+      "citation_hit_at_k": true,
+      "rank": 1,
+      "citation_rank": 1,
+      "no_evidence": false,
+      "passed": true
+    },
+    {
+      "id": "heldout-03",
+      "split": "held_out",
+      "question": "What information should be captured at the start of an incident?",
+      "answerable": true,
+      "expected_source": "incident_response_guide.md",
+      "expected_sources": [
+        "incident_response_guide.md"
+      ],
+      "expected_citations": [
+        "[incident_response_guide.md#0]"
+      ],
+      "retrieved_sources": [
+        "incident_response_guide.md",
+        "ai_data_governance_policy.md",
+        "ai_data_governance_policy.md"
+      ],
+      "retrieved_citations": [
+        "[incident_response_guide.md#0]",
+        "[ai_data_governance_policy.md#1]",
+        "[ai_data_governance_policy.md#0]"
+      ],
+      "hit_at_k": true,
+      "citation_hit_at_k": true,
+      "rank": 1,
+      "citation_rank": 1,
+      "no_evidence": false,
+      "passed": true
+    },
+    {
+      "id": "heldout-04",
+      "split": "held_out",
+      "question": "How can someone challenge or override a prediction?",
+      "answerable": true,
+      "expected_source": "model_risk_review_playbook.md",
+      "expected_sources": [
+        "model_risk_review_playbook.md"
+      ],
+      "expected_citations": [
+        "[model_risk_review_playbook.md#1]"
+      ],
+      "retrieved_sources": [
+        "model_risk_review_playbook.md",
+        "model_risk_review_playbook.md"
+      ],
+      "retrieved_citations": [
+        "[model_risk_review_playbook.md#0]",
+        "[model_risk_review_playbook.md#1]"
+      ],
+      "hit_at_k": true,
+      "citation_hit_at_k": true,
+      "rank": 1,
+      "citation_rank": 2,
+      "no_evidence": false,
+      "passed": true
+    },
+    {
+      "id": "heldout-05",
+      "split": "held_out",
+      "question": "What is the reimbursement limit for international travel?",
+      "answerable": false,
+      "expected_source": null,
+      "expected_sources": [],
+      "expected_citations": [],
+      "retrieved_sources": [],
+      "retrieved_citations": [],
+      "hit_at_k": null,
+      "citation_hit_at_k": null,
+      "rank": null,
+      "citation_rank": null,
+      "no_evidence": true,
+      "passed": true
+    },
+    {
+      "id": "heldout-06",
+      "split": "held_out",
+      "question": "Which tax form is required for contractor payments?",
+      "answerable": false,
+      "expected_source": null,
+      "expected_sources": [],
+      "expected_citations": [],
+      "retrieved_sources": [],
+      "retrieved_citations": [],
+      "hit_at_k": null,
+      "citation_hit_at_k": null,
+      "rank": null,
+      "citation_rank": null,
+      "no_evidence": true,
+      "passed": true
+    }
+  ]
+}

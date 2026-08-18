@@ -5,11 +5,10 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "governance-rag-assistant"
 version = "0.1.0"
-description = "An evaluated, citation-grounded RAG assistant for governance documents."
+description = "An offline TF-IDF governance retrieval baseline with optional citation-checked generation."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-  "pandas>=2.2.0",
   "scikit-learn>=1.5.0",
   "streamlit>=1.36.0",
 ]

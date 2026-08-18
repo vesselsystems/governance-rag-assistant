@@ -43,14 +43,14 @@ if question:
         base_url=os.getenv("OPENAI_BASE_URL"),
     )
     st.subheader(f"Answer ({mode})")
-    st.markdown(answer)
+    st.text(answer)
 
     st.subheader("Retrieved evidence")
     if not results:
         st.info("No indexed evidence matched this question.")
     for result in results:
         with st.expander(f"{result.chunk.citation} — score {result.score:.3f}"):
-            st.write(result.chunk.text)
+            st.text(result.chunk.text)
 
 st.sidebar.header("Corpus")
 st.sidebar.write(f"{len(retriever.chunks)} indexed chunks")

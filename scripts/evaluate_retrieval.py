@@ -22,4 +22,4 @@ if __name__ == "__main__":
     )
     print(json.dumps(metrics, indent=2))
     for row in rows:
-        print(f"{'PASS' if row['hit_at_k'] else 'FAIL'}: {row['question']}")
+        print(f"{'PASS' if row['passed'] else 'FAIL'}: {row['question']}")

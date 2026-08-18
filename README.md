@@ -1,18 +1,23 @@
 # Governance RAG Assistant
 
-A research-minded GenAI portfolio project following the AI Career Training Plan's third project:
+[![CI](https://github.com/vesselsystems/governance-rag-assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/vesselsystems/governance-rag-assistant/actions/workflows/ci.yml)
 
-> RAG chatbot over a policy/governance document set.
+A small, offline-first governance-document retrieval-augmented
+assistant. It indexes Markdown with deterministic TF-IDF retrieval, shows source chunks, and
+uses an optional OpenAI-compatible endpoint only when explicitly configured.
 
-The assistant retrieves evidence from a small, versioned governance corpus, returns citations, evaluates retrieval quality on a hand-built question set, and supports an optional OpenAI-compatible generation endpoint. Without an API key it still runs in **evidence-only mode**, which makes the retrieval and safety behavior testable and reproducible.
+This is an evaluation exercise, not evidence of broad RAG quality. The no-key path is
+provider-neutral: it uses the local index and returns an evidence-only draft. If an optional
+provider fails, returns malformed data, or cites a chunk that was not retrieved, the app also
+returns that evidence-only draft.
 
-## Why this is professionally useful
+## Corpus status
 
-- It treats RAG as an evaluated system, not a chatbot demo.
-- Every response is tied to a source chunk.
-- The default local TF-IDF index is deterministic and cheap; it is a baseline that can later be compared with embedding retrieval.
-- The corpus is explicitly marked as original demo guidance. Replace it with public policy or documentation after reviewing its license and provenance.
-- The evaluation set measures hit@k and reciprocal rank before generation is introduced.
+The three indexed documents are **original demo guidance written for this repository**. They
+are not an organization's policy, legal advice, or a sourced public-policy collection. No
+external provenance, license, or authority is claimed for the current corpus. See
+[`data/documents/README.md`](data/documents/README.md) before replacing it with material from
+elsewhere.
 
 ## Quick start
 
@@ -26,48 +31,80 @@ python scripts/evaluate_retrieval.py
 streamlit run app.py
 ```
 
-Then open the local Streamlit URL. For a real LLM-backed answer, set an OpenAI-compatible key and optionally a model/base URL:
+Without credentials, the app remains local and displays retrieved evidence. An optional
+OpenAI-compatible endpoint can be configured as follows:
 
-```bash
-# PowerShell example
+```powershell
 $env:OPENAI_API_KEY = "..."
 $env:OPENAI_MODEL = "your-model"
 streamlit run app.py
 ```
 
-Without `OPENAI_API_KEY`, the app displays a grounded evidence draft instead of inventing an answer.
+`OPENAI_BASE_URL` is optional. Do not send sensitive documents to an endpoint without the
+necessary review and approval.
 
 ## Architecture
 
 ```text
-Markdown corpus
-      │
-      ▼
-clean + chunk + metadata
-      │
-      ▼
-TF-IDF retrieval baseline ──► top-k evidence + citations
-      │                                  │
-      └── evaluation set                 └── optional LLM generation
-                                             │
-                                             ▼
-                                    Streamlit answer interface
+Original demo Markdown
+        │
+        ▼
+clean + deterministic word chunks
+        │
+        ▼
+local TF-IDF baseline ──► top-k chunks + citation IDs
+        │                                │
+        └── offline evaluation            └── optional provider
+                                               │
+                         valid response + retrieved citations only
+                                               │
+                                  otherwise evidence-only fallback
 ```
 
-## Responsible-use controls
+The citation check compares citation identifiers in provider output with the identifiers in
+the current retrieved set. It does **not** establish that every claim is supported or measure
+citation precision/recall.
 
-- The demo corpus is not legal advice and is not an organizational policy.
-- The assistant is instructed to answer only from retrieved evidence.
-- No-answer behavior is explicit when retrieval returns no evidence.
-- Source provenance, citation coverage, prompt-injection tests, and unsupported-answer review are documented.
-- Secrets are read from environment variables and are not committed.
+## Offline evaluation
+
+`evaluation/questions.json` contains a small development set and a manually authored
+`held_out` set. The held-out records include answerable paraphrases with expected chunk
+citations and two questions intentionally outside this corpus. The split is useful for a
+repeatable check, but it is not an independently collected benchmark.
+
+Run:
+
+```bash
+python scripts/evaluate_retrieval.py
+```
+
+The report separates:
+
+- source hit@3 and mean reciprocal rank, which measure retrieval labels;
+- exact expected-chunk/citation hit@3, which measures whether the labeled chunk was retrieved;
+- the rate at which the unanswerable examples produced no lexical evidence.
+
+These are retrieval and abstention checks only. They do not measure generated-answer quality,
+claim entailment, citation completeness, prompt-injection resistance, latency, or cost. See
+[`docs/evaluation.md`](docs/evaluation.md) and [`reports/first_run.md`](reports/first_run.md)
+for limitations and the recorded local run.
+
+## Responsible-use limits
+
+- Treat the corpus as teaching material, not organizational policy or legal advice.
+- No-key mode is the default and does not require a provider account.
+- Empty retrieval returns an explicit no-evidence response.
+- Provider errors and malformed or ungrounded citation output fail closed to evidence-only mode.
+- The prompt asks the provider not to follow instructions in retrieved documents, but this
+  repository does not claim to have completed adversarial prompt-injection testing.
+- Human review is needed before using the pattern for consequential decisions.
 
 ## Project structure
 
 ```text
 .
 ├── app.py
-├── data/documents/                 # versioned demo governance documents
+├── data/documents/                 # original demo governance guidance
 ├── docs/architecture.md
 ├── docs/evaluation.md
 ├── evaluation/questions.json
@@ -81,10 +118,16 @@ TF-IDF retrieval baseline ──► top-k evidence + citations
 └── tests/
 ```
 
-## Research extensions
+## Next experiments
 
-1. Compare TF-IDF with sentence-transformer embeddings on the same evaluation set.
-2. Add a labeled answer set and measure citation precision/recall and unsupported-claim rate.
-3. Add adversarial prompt-injection and document-poisoning tests.
-4. Measure latency, token/cost usage, and answer quality across models.
-5. Replace the demo corpus with a licensed public policy/documentation collection.
+1. Add independently sourced, licensed documents with URL, retrieval date, license, checksum,
+   and version metadata.
+2. Compare retrieval methods on the same labeled set.
+3. Have reviewers label claim support and citation completeness for generated answers.
+4. Add adversarial prompt-injection/document-poisoning cases rather than treating the prompt
+   instruction as a tested guarantee.
+5. Measure provider-specific quality, latency, and cost separately from retrieval metrics.
+
+## License
+
+The code and documentation are released under the [MIT License](LICENSE). The current demo corpus is original material in this repository; any future external documents need their own provenance and license review.

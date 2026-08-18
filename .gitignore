@@ -6,6 +6,7 @@ __pycache__/
 .ruff_cache/
 .streamlit/
 reports/*.json
+!reports/retrieval_results.json
 reports/*.csv
 .DS_Store
 Thumbs.db

@@ -1,5 +1,9 @@
-# Corpus provenance
+# Corpus status and provenance
 
-The documents in this directory are **original demo guidance written for this portfolio project**, not an organization's policy and not legal advice. They are intentionally short so the repository can run without downloading copyrighted material or requiring credentials.
+The documents in this directory are **original demo guidance written for this repository**.
+They were created as short teaching artifacts so the project can run offline. They are not an
+organization's approved policy, legal advice, or evidence of an external standard.
 
-For a production-style version, replace or extend them with a small, licensed public collection. Record the source URL, retrieval date, license, checksum, and document version before indexing it.
+The current files do not claim external provenance, licensing, or policy authority. If this
+corpus is replaced with public or organizational material, record at least the source URL,
+retrieval date, license or permission, checksum, document version, and owner before indexing it.
