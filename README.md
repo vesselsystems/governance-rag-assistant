@@ -4,7 +4,9 @@
 
 A small, offline-first governance-document retrieval-augmented assistant. It indexes Markdown
 with deterministic TF-IDF retrieval, shows source chunks, and uses an optional OpenAI-compatible
-endpoint only when explicitly configured.
+endpoint only when explicitly configured. The Streamlit app was smoke-tested locally; the approved
+Chrome DevTools browser tool was unavailable in this run, so no screenshot is claimed. There is no
+hosted deployment or deployment URL.
 
 This is an evaluation exercise, not evidence of broad RAG quality. The no-key path is
 provider-neutral: it uses the local index and returns an evidence-only draft. If an optional
