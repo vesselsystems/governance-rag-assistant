@@ -1,0 +1,22 @@
+[
+  {
+    "question": "What should a project record about the data it uses?",
+    "expected_source": "ai_data_governance_policy.md"
+  },
+  {
+    "question": "Which metrics and checks belong in a model review?",
+    "expected_source": "model_risk_review_playbook.md"
+  },
+  {
+    "question": "What should the team do when a system exposes restricted information?",
+    "expected_source": "incident_response_guide.md"
+  },
+  {
+    "question": "How should sensitive fields be handled during development?",
+    "expected_source": "ai_data_governance_policy.md"
+  },
+  {
+    "question": "What belongs in an approval record?",
+    "expected_source": "model_risk_review_playbook.md"
+  }
+]
