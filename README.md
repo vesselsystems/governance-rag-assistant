@@ -6,7 +6,8 @@ A small, offline-first governance-document retrieval-augmented assistant. It ind
 with deterministic TF-IDF retrieval, shows source chunks, and uses an optional OpenAI-compatible
 endpoint only when explicitly configured. The Streamlit app was smoke-tested locally; the approved
 Chrome DevTools browser tool was unavailable in this run, so no screenshot is claimed. There is no
-hosted deployment or deployment URL.
+hosted deployment or deployment URL because no target platform or credentials were authorized; the
+deployment-ready state is the deterministic local app, manifest verification, and CI checks.
 
 This is an evaluation exercise, not evidence of broad RAG quality. The no-key path is
 provider-neutral: it uses the local index and returns an evidence-only draft. If an optional
