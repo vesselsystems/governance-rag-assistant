@@ -1,6 +1,8 @@
 import json
 from pathlib import Path
 
+import pytest
+
 import governance_rag.generation as generation
 from governance_rag.corpus import chunk_text
 from governance_rag.evaluation import evaluate_retrieval
@@ -36,6 +38,8 @@ def test_chunking_retains_source_and_rejects_bad_overlap() -> None:
     assert chunks
     assert all(chunk.source == "demo.md" for chunk in chunks)
     assert chunks[0].citation == "[demo.md#0]"
+    with pytest.raises(ValueError, match="overlap_words"):
+        chunk_text("one two three", "demo.md", chunk_words=2, overlap_words=2)
 
 
 def test_retriever_returns_governance_evidence() -> None:
@@ -56,8 +60,13 @@ def test_evaluation_questions_cover_held_out_and_unanswerable_cases() -> None:
     assert len(rows) == len(questions)
     assert metrics["hit_at_k"] >= 0.8
     assert metrics["citation_hit_at_k"] >= 0.8
+    assert metrics["source_precision_at_k"] >= 0.0
+    assert metrics["source_recall_at_k"] >= 0.8
+    assert metrics["citation_recall_at_k"] >= 0.8
     assert metrics["unanswerable_no_evidence_rate"] == 1.0
     assert metrics["by_split"]["held_out"]["unanswerable_questions"] == 2.0
+    assert metrics["by_split"]["public"]["questions"] == 4.0
+    assert metrics["by_split"]["public"]["case_pass_rate"] == 1.0
 
 
 def test_no_evidence_is_explicit() -> None:
@@ -141,6 +150,25 @@ def test_valid_retrieved_citation_allows_llm_mode(monkeypatch) -> None:
 
     assert answer == f"The record has required fields. {citation}"
     assert mode == "llm"
+
+
+def test_zero_score_evidence_never_calls_provider(monkeypatch) -> None:
+    result = RetrievedChunk(chunk=chunk_text("unrelated", "demo.md")[0], score=0.0)
+
+    def unexpected_call(*args, **kwargs):
+        raise AssertionError("provider should not be called for zero-score evidence")
+
+    monkeypatch.setattr(generation, "generate_openai_compatible", unexpected_call)
+
+    answer, mode = answer_question(
+        "What is not in this corpus?",
+        [result],
+        api_key="test-key",
+        model="test-model",
+    )
+
+    assert answer == NO_EVIDENCE
+    assert mode == "evidence-only"
 
 
 def test_no_evidence_never_calls_provider(monkeypatch) -> None:

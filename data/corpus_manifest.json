@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "corpus_id": "governance-demo-and-ppn017",
+  "status": "external_corpus_verified",
+  "blocker": null,
+  "documents": [
+    {
+      "path": "documents/ai_data_governance_policy.md",
+      "source_type": "repository_authored_demo",
+      "url": null,
+      "pdf_url": null,
+      "publisher": null,
+      "license": null,
+      "license_url": null,
+      "revision": null,
+      "retrieval_date": null,
+      "sha256": "635e4e836a2928d0cd5a17f52d09d217d7a6492c5b81706e9361195d18292637",
+      "raw_pdf_sha256": null,
+      "extraction_method": null,
+      "notes": "Repository-authored demo teaching artifact; no upstream source or external authority is claimed."
+    },
+    {
+      "path": "documents/incident_response_guide.md",
+      "source_type": "repository_authored_demo",
+      "url": null,
+      "pdf_url": null,
+      "publisher": null,
+      "license": null,
+      "license_url": null,
+      "revision": null,
+      "retrieval_date": null,
+      "sha256": "4a37ed7e210e9173e7aebc3be6fddd24db53c92abbe47b02753a4f1dc2caa035",
+      "raw_pdf_sha256": null,
+      "extraction_method": null,
+      "notes": "Repository-authored demo teaching artifact; no upstream source or external authority is claimed."
+    },
+    {
+      "path": "documents/model_risk_review_playbook.md",
+      "source_type": "repository_authored_demo",
+      "url": null,
+      "pdf_url": null,
+      "publisher": null,
+      "license": null,
+      "license_url": null,
+      "revision": null,
+      "retrieval_date": null,
+      "sha256": "ff19232f3d650bb8dbf15d244d17a79e142fb982a7df177218b8a52ae886773c",
+      "raw_pdf_sha256": null,
+      "extraction_method": null,
+      "notes": "Repository-authored demo teaching artifact; no upstream source or external authority is claimed."
+    },
+    {
+      "path": "documents/ppn_017_improving_transparency_of_ai_use_in_procurement.txt",
+      "source_type": "official_external",
+      "url": "https://www.gov.uk/government/publications/ppn-017-improving-transparency-of-ai-use-in-procurement",
+      "pdf_url": "https://assets.publishing.service.gov.uk/media/67af7ba0e270ceae39f9e279/PPN_017_Improving_transparency_of_AI_use_in_procurement.pdf",
+      "publisher": "UK Cabinet Office",
+      "license": "Open Government Licence v3.0",
+      "license_url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+      "revision": "Updated February 2025",
+      "retrieval_date": "2026-08-18",
+      "sha256": "95cba453a3c44ea0641334365603c083b8f54fd227f501c91b17fc3825509ac1",
+      "raw_pdf_sha256": "cb67e1910da3005a0160c0f2dcc3e8fdcc5de2a1fcc636ad2f6609199d73d62e",
+      "extraction_method": "pdftotext -layout -enc UTF-8 (Xpdf 4.06)",
+      "notes": "Official Cabinet Office PDF downloaded from the publication page and extracted without editorial additions. The raw PDF is not tracked; its SHA-256 is recorded for source verification."
+    }
+  ]
+}

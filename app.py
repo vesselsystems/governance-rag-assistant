@@ -5,7 +5,7 @@ from pathlib import Path
 
 import streamlit as st
 
-from governance_rag.generation import answer_question
+from governance_rag.generation import answer_question, safe_plain_text
 from governance_rag.retrieval import TfidfRetriever
 
 ROOT = Path(__file__).parent
@@ -43,14 +43,18 @@ if question:
         base_url=os.getenv("OPENAI_BASE_URL"),
     )
     st.subheader(f"Answer ({mode})")
-    st.text(answer)
+    # Retrieved documents and provider output are untrusted; render as plain text,
+    # never as Markdown or HTML.
+    st.text(safe_plain_text(answer))
 
     st.subheader("Retrieved evidence")
     if not results:
         st.info("No indexed evidence matched this question.")
-    for result in results:
-        with st.expander(f"{result.chunk.citation} — score {result.score:.3f}"):
-            st.text(result.chunk.text)
+    for index, result in enumerate(results, start=1):
+        # Keep the expander label fixed; source names are corpus-controlled text.
+        with st.expander(f"Evidence chunk {index}"):
+            st.text(safe_plain_text(f"{result.chunk.citation} — score {result.score:.3f}"))
+            st.text(safe_plain_text(result.chunk.text))
 
 st.sidebar.header("Corpus")
 st.sidebar.write(f"{len(retriever.chunks)} indexed chunks")

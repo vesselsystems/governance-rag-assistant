@@ -1,14 +1,14 @@
 # Offline evaluation
 
-## What is in the set
+## Retrieval set and provenance
 
-`evaluation/questions.json` is a small, hand-authored label set over the current original demo
-corpus. The five `dev` cases are the initial smoke questions. The `held_out` cases were added
-as different phrasings and include four answerable questions with expected chunk citations and
-two questions whose topics are not in the corpus.
-
-This is a transparent regression set, not an independent benchmark. The corpus is small and
-there is no claim that these examples represent production traffic or general RAG quality.
+`evaluation/questions.json` is a small, hand-authored label set over the three repository-authored
+demo files and the verified UK Cabinet Office PPN 017 snapshot. The `dev` cases are smoke
+questions, `public` cases exercise the external snapshot, and the `held_out` cases use different
+phrasings plus deliberately out-of-corpus questions. This is a repeatable regression set, not an
+independent benchmark. Corpus provenance and the separate source licences are recorded in
+[`data/corpus_manifest.json`](../data/corpus_manifest.json) and
+[`data/documents/README.md`](../data/documents/README.md).
 
 Each answerable record may include:
 
@@ -16,44 +16,63 @@ Each answerable record may include:
 - `expected_citations`: exact chunk identifiers such as `[model_risk_review_playbook.md#1]`.
 
 An unanswerable record sets `answerable` to `false` and has no expected source. The local TF-IDF
-retriever treats a query with no non-zero lexical match as having no evidence; that is a narrow
-check, not a complete out-of-domain detector.
+retriever treats a query with no positive lexical match as having no evidence; that is a narrow
+abstention check, not a complete out-of-domain detector.
 
-## Retrieval and abstention metrics
+## Retrieval metrics
 
 Run `python scripts/evaluate_retrieval.py` to regenerate
-`reports/retrieval_results.json`.
+`reports/retrieval_results.json`. At `top_k=3`, the report contains:
 
-- **Hit@3:** for answerable, source-labeled records, whether the expected source appears in the
-  top three chunks.
-- **Mean reciprocal rank:** the reciprocal rank of the expected source (or expected citation
-  when a record has no source label), with zero for a miss.
-- **Citation hit@3:** for records with `expected_citations`, whether an exact expected chunk
-  appears in the top three. This checks retrieval of an identifier, not whether generated prose
-  is supported by it.
-- **Unanswerable no-evidence rate:** the fraction of `answerable: false` records for which the
-  retriever returns no chunks.
-- **Case pass rate:** all labels on a record must pass; unanswerable records pass only when no
-  chunks are returned.
+- **source hit@k:** whether any expected source appears in the retrieved set;
+- **mean reciprocal rank:** reciprocal rank of the expected source, or expected citation when
+  only a citation label is provided, with zero for a miss;
+- **source precision/recall@k:** overlap with the labeled expected source set, defined only for
+  source-labeled answerable records;
+- **exact citation hit/precision/recall@k:** overlap with labeled chunk identifiers, defined
+  only for records with `expected_citations`;
+- **unanswerable no-evidence/abstention rate:** fraction of explicitly unanswerable records
+  for which retrieval returned no chunks;
+- **case pass rate:** all labels on a record pass; unanswerable records pass only when no chunks
+  are returned.
 
-The JSON also reports the same retrieval summaries by `split`. Metrics are descriptive results
-for this set and configuration, not estimates of deployment performance.
+Precision and recall here describe retrieval labels, not answer claims. They are not estimates of
+production performance. The report includes rows and split summaries so denominators remain
+inspectable.
 
-## Generation is separate
+## Separate generation validation
 
-The offline script does not call a model and does not score generated answers. The provider
-boundary has unit tests for malformed responses, provider exceptions, invalid citation IDs,
-valid retrieved citations, and no-evidence behavior. Those tests verify fallback and identifier
-handling only; they are not a citation-quality, claim-entailment, or prompt-injection study.
+The offline retrieval script never calls a model and does not score generated answers. Run
+`python scripts/validate_generation.py` to exercise the deterministic provider-output gate using
+`evaluation/generation_cases.json`. It covers a valid retrieved citation, missing citation,
+wrong citation, instruction-like output, and malformed content. The report is a structural gate
+check only; it does not measure claim entailment, citation completeness, refusal quality, model
+quality, latency, cost, or provider behavior.
 
-Generation quality would require separately labeled answers and human or task-specific review
-for claim support, citation completeness, refusal quality, and harmful failure modes. Those
-measurements are not reported here.
+The optional provider path is fail-closed: network errors, malformed responses, control/bidi text,
+obvious instruction-exfiltration output, citation-free answers, and citations outside the current
+retrieved set return evidence-only mode. Even a structurally valid citation does not prove that
+the cited chunk supports every claim.
+
+## Adversarial fixtures
+
+`evaluation/adversarial_questions.json` points to synthetic prompt-injection and document-
+poisoning fixtures under `tests/fixtures/adversarial/`. Run
+`python scripts/evaluate_adversarial.py` to verify that the fixtures exist, prompt construction
+labels retrieved text as untrusted, and representative unsafe outputs are rejected. This is an
+offline control test; it intentionally does **not** claim prompt-injection resistance because no
+model is called.
 
 ## Reproducibility and limits
 
-- Retrieval is local, deterministic TF-IDF with fixed word-window chunking.
-- Questions were authored with knowledge of the demo documents, including the held-out labels.
+- Retrieval is local, deterministic TF-IDF with fixed word-window chunking and deterministic tie
+  breaking.
+- The manifest verifies the exact local text bytes before indexing; it never downloads source
+  URLs.
+- Questions were authored with knowledge of the demo and PPN documents, including held-out
+  labels.
 - Results can change if documents, chunk settings, stop-word behavior, or labels change.
-- The corpus has no external provenance in this repository. Replacing it requires recording
-  provenance and license information before making stronger source claims.
+- Tiny hand-authored sets cannot support broad quality or safety claims.
+- Any future external snapshot needs a verified URL, publisher, licence/permission, revision,
+  retrieval date, extracted-text checksum, and (when applicable) raw-source checksum before it is
+  indexed. The PPN snapshot's OGL terms remain separate from the repository MIT licence.

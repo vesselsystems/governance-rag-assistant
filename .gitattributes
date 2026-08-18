@@ -1,0 +1,2 @@
+# Preserve the exact bytes emitted by the verified PDF text extraction.
+data/documents/ppn_017_improving_transparency_of_ai_use_in_procurement.txt -text

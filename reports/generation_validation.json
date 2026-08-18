@@ -1,0 +1,40 @@
+{
+  "metrics": {
+    "cases": 5,
+    "passed": 5,
+    "case_pass_rate": 1.0,
+    "scope": "structural provider-output validation only; no model was called"
+  },
+  "rows": [
+    {
+      "id": "valid-citation",
+      "expected_valid": true,
+      "observed_valid": true,
+      "passed": true
+    },
+    {
+      "id": "missing-citation",
+      "expected_valid": false,
+      "observed_valid": false,
+      "passed": true
+    },
+    {
+      "id": "unretrieved-citation",
+      "expected_valid": false,
+      "observed_valid": false,
+      "passed": true
+    },
+    {
+      "id": "instruction-echo",
+      "expected_valid": false,
+      "observed_valid": false,
+      "passed": true
+    },
+    {
+      "id": "malformed-content",
+      "expected_valid": false,
+      "observed_valid": false,
+      "passed": true
+    }
+  ]
+}

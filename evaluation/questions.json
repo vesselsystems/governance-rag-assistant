@@ -40,6 +40,38 @@
     "expected_citations": ["[model_risk_review_playbook.md#1]"]
   },
   {
+    "id": "public-01",
+    "split": "public",
+    "question": "When should in-scope organisations note the provisions of this PPN?",
+    "answerable": true,
+    "expected_source": "ppn_017_improving_transparency_of_ai_use_in_procurement.txt",
+    "expected_citations": ["[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#2]"]
+  },
+  {
+    "id": "public-02",
+    "split": "public",
+    "question": "What may suppliers be asked to disclose about using AI to create a tender?",
+    "answerable": true,
+    "expected_source": "ppn_017_improving_transparency_of_ai_use_in_procurement.txt",
+    "expected_citations": ["[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#3]"]
+  },
+  {
+    "id": "public-03",
+    "split": "public",
+    "question": "What additional due diligence may be needed when suppliers use AI tools to create tender responses?",
+    "answerable": true,
+    "expected_source": "ppn_017_improving_transparency_of_ai_use_in_procurement.txt",
+    "expected_citations": ["[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#3]"]
+  },
+  {
+    "id": "public-04",
+    "split": "public",
+    "question": "What should a contracting authority consider about meeting records from an AI-enabled video conferencing service?",
+    "answerable": true,
+    "expected_source": "ppn_017_improving_transparency_of_ai_use_in_procurement.txt",
+    "expected_citations": ["[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#6]"]
+  },
+  {
     "id": "heldout-01",
     "split": "held_out",
     "question": "Which details belong in an AI project data inventory?",
@@ -82,7 +114,7 @@
   {
     "id": "heldout-06",
     "split": "held_out",
-    "question": "Which tax form is required for contractor payments?",
+    "question": "What is the recipe for sourdough starter hydration?",
     "answerable": false,
     "expected_source": null,
     "expected_citations": []

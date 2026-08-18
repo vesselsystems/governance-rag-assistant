@@ -7,6 +7,8 @@ __pycache__/
 .streamlit/
 reports/*.json
 !reports/retrieval_results.json
+!reports/generation_validation.json
+!reports/adversarial_results.json
 reports/*.csv
 .DS_Store
 Thumbs.db

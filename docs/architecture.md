@@ -1,36 +1,59 @@
 # Architecture
 
-## Indexing
+## Corpus and manifest
 
-1. Read versioned Markdown/text files (the current files are original demo guidance).
-2. Split each source into deterministic overlapping word windows.
-3. Keep the source filename and chunk identifier with every chunk.
-4. Fit a local TF-IDF matrix as the retrieval baseline.
+1. Read versioned Markdown/text files from the local corpus directory.
+2. When `data/corpus_manifest.json` is present, require every indexed file to be listed.
+3. Validate the manifest's provenance fields and compare each local file's SHA-256 digest with
+   the recorded snapshot checksum. External PDF digests are recorded as provenance metadata;
+   the raw PDFs are not fetched or required at runtime.
+4. Attach the manifest entry to each `DocumentChunk`, including its source type, publication/PDF
+   URL, publisher, licence, revision, retrieval date, and extraction metadata where recorded.
+   URL fields are metadata only; the loader never downloads them.
+5. Split each source into deterministic overlapping word windows and keep the source filename,
+   chunk identifier, and provenance with every chunk.
+6. Fit a local TF-IDF matrix as the retrieval baseline. The checked-in corpus contains three
+   repository-authored demo files and one separately marked official PPN 017 text snapshot.
+
+The manifest's demo entries intentionally have `null` external provenance fields because they
+are repository-authored teaching artifacts. The PPN entry records the official Cabinet Office
+publication and PDF, OGL v3.0 terms URL, February 2025 revision, retrieval date, extracted-text
+SHA-256, and raw PDF SHA-256. The repository MIT licence does not apply to or replace the PPN's
+source terms.
 
 ## Query path
 
 1. Transform the question with the same vectorizer.
-2. Rank chunks by cosine similarity and discard zero-score matches.
-3. Return top-k matches with scores and citation identifiers.
-4. Use the evidence-only mode when no provider is configured.
+2. Rank chunks by cosine similarity, with deterministic source/chunk tie breakers; omit zero-score
+   matches.
+3. Return top-k matches with score and citation identifiers.
+4. Use evidence-only mode when no provider is configured or retrieval has no positive evidence.
 5. If an optional OpenAI-compatible endpoint is configured, send the question and retrieved
-   context with instructions to answer only from that context.
-6. Accept provider output only when it is non-empty and every citation-shaped token is an exact
-   identifier from the retrieved set.
-7. On a provider/network error, malformed response, empty content, or invalid citation, return
+   context as quoted, explicitly untrusted data.
+6. Accept provider output only when it is non-empty plain text, contains at least one exact
+   citation from the current retrieved set, contains no citation outside that set, and does not
+   match the small set of obvious instruction-exfiltration patterns.
+7. On a provider/network error, malformed response, unsafe content, or invalid citation, return
    the deterministic evidence-only draft.
-8. Display the retrieved evidence beside the answer for inspection.
+8. Display the answer and retrieved evidence with plain-text rendering.
 
-The citation gate validates identifier membership. It is not a claim-entailment or citation
-precision test, and it does not prove that a provider followed the prompt.
+The generation gate validates identifiers and a few structural hazards. It is not a claim-
+entailment, citation-precision, or prompt-injection guarantee.
 
 ## Trust boundaries
 
-- Documents are untrusted content. The prompt asks the optional provider not to follow
-  instructions found in retrieved text; adversarial prompt-injection resistance has not been
-  established by this demo.
+- Documents are untrusted content. Delimiters and system instructions tell a provider not to
+  follow document text, but a prompt is not a security boundary and no model-backed resistance
+  result is claimed.
+- User questions are also quoted data; text that looks like a role message is not promoted to a
+  system instruction.
 - The optional endpoint is external and may receive the question and retrieved document text.
   Do not index sensitive data without appropriate approval.
 - The no-key path does not contact a provider and remains a local retrieval/evidence-only mode.
+- `safe_plain_text` removes ANSI, control, bidi, and zero-width formatting characters before
+  display or prompt quoting. Streamlit uses `st.text`, never document-controlled Markdown/HTML.
+- Synthetic prompt-injection and document-poisoning fixtures are separate from the production-
+  like demo corpus. Offline fixture checks verify boundaries and deterministic rejection cases,
+  not adversarial model behavior.
 - The application is a demonstration and does not provide authorization, legal advice, or a
   decision.

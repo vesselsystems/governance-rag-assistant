@@ -1,15 +1,27 @@
 {
+  "corpus": {
+    "corpus_id": "governance-demo-and-ppn017",
+    "status": "external_corpus_verified",
+    "verified_documents": 4,
+    "verified_external_documents": 1
+  },
   "metrics": {
-    "questions": 11.0,
-    "answerable_questions": 9.0,
+    "questions": 15.0,
+    "answerable_questions": 13.0,
     "unanswerable_questions": 2.0,
     "hit_at_k": 1.0,
     "mean_reciprocal_rank": 1.0,
-    "citation_evaluated_questions": 9.0,
+    "citation_evaluated_questions": 13.0,
     "citation_hit_at_k": 1.0,
+    "source_precision_at_k": 0.6538461538461539,
+    "source_recall_at_k": 1.0,
+    "citation_precision_at_k": 0.3589743589743589,
+    "citation_recall_at_k": 1.0,
     "unanswerable_no_evidence_rate": 1.0,
+    "unanswerable_abstention_rate": 1.0,
+    "retrieval_nonempty_rate": 0.8666666666666667,
     "case_pass_rate": 1.0,
-    "ranked_answerable_questions": 9.0,
+    "ranked_answerable_questions": 13.0,
     "by_split": {
       "dev": {
         "questions": 5.0,
@@ -19,7 +31,13 @@
         "mean_reciprocal_rank": 1.0,
         "citation_evaluated_questions": 5.0,
         "citation_hit_at_k": 1.0,
+        "source_precision_at_k": 0.4666666666666666,
+        "source_recall_at_k": 1.0,
+        "citation_precision_at_k": 0.3333333333333333,
+        "citation_recall_at_k": 1.0,
         "unanswerable_no_evidence_rate": 0.0,
+        "unanswerable_abstention_rate": 0.0,
+        "retrieval_nonempty_rate": 1.0,
         "case_pass_rate": 1.0,
         "ranked_answerable_questions": 5.0
       },
@@ -31,7 +49,31 @@
         "mean_reciprocal_rank": 1.0,
         "citation_evaluated_questions": 4.0,
         "citation_hit_at_k": 1.0,
+        "source_precision_at_k": 0.5416666666666666,
+        "source_recall_at_k": 1.0,
+        "citation_precision_at_k": 0.41666666666666663,
+        "citation_recall_at_k": 1.0,
         "unanswerable_no_evidence_rate": 1.0,
+        "unanswerable_abstention_rate": 1.0,
+        "retrieval_nonempty_rate": 0.6666666666666666,
+        "case_pass_rate": 1.0,
+        "ranked_answerable_questions": 4.0
+      },
+      "public": {
+        "questions": 4.0,
+        "answerable_questions": 4.0,
+        "unanswerable_questions": 0.0,
+        "hit_at_k": 1.0,
+        "mean_reciprocal_rank": 1.0,
+        "citation_evaluated_questions": 4.0,
+        "citation_hit_at_k": 1.0,
+        "source_precision_at_k": 1.0,
+        "source_recall_at_k": 1.0,
+        "citation_precision_at_k": 0.3333333333333333,
+        "citation_recall_at_k": 1.0,
+        "unanswerable_no_evidence_rate": 0.0,
+        "unanswerable_abstention_rate": 0.0,
+        "retrieval_nonempty_rate": 1.0,
         "case_pass_rate": 1.0,
         "ranked_answerable_questions": 4.0
       }
@@ -53,18 +95,24 @@
       "retrieved_sources": [
         "ai_data_governance_policy.md",
         "model_risk_review_playbook.md",
-        "model_risk_review_playbook.md"
+        "ppn_017_improving_transparency_of_ai_use_in_procurement.txt"
       ],
       "retrieved_citations": [
         "[ai_data_governance_policy.md#0]",
         "[model_risk_review_playbook.md#1]",
-        "[model_risk_review_playbook.md#0]"
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#12]"
       ],
+      "retrieved_count": 3,
       "hit_at_k": true,
       "citation_hit_at_k": true,
+      "source_precision_at_k": 0.3333333333333333,
+      "source_recall_at_k": 1.0,
+      "citation_precision_at_k": 0.3333333333333333,
+      "citation_recall_at_k": 1.0,
       "rank": 1,
       "citation_rank": 1,
       "no_evidence": false,
+      "min_score": 0.0,
       "passed": true
     },
     {
@@ -89,11 +137,17 @@
         "[incident_response_guide.md#0]",
         "[ai_data_governance_policy.md#1]"
       ],
+      "retrieved_count": 3,
       "hit_at_k": true,
       "citation_hit_at_k": true,
+      "source_precision_at_k": 0.3333333333333333,
+      "source_recall_at_k": 1.0,
+      "citation_precision_at_k": 0.3333333333333333,
+      "citation_recall_at_k": 1.0,
       "rank": 1,
       "citation_rank": 1,
       "no_evidence": false,
+      "min_score": 0.0,
       "passed": true
     },
     {
@@ -111,18 +165,24 @@
       "retrieved_sources": [
         "incident_response_guide.md",
         "ai_data_governance_policy.md",
-        "ai_data_governance_policy.md"
+        "ppn_017_improving_transparency_of_ai_use_in_procurement.txt"
       ],
       "retrieved_citations": [
         "[incident_response_guide.md#0]",
-        "[ai_data_governance_policy.md#1]",
-        "[ai_data_governance_policy.md#0]"
+        "[ai_data_governance_policy.md#0]",
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#8]"
       ],
+      "retrieved_count": 3,
       "hit_at_k": true,
       "citation_hit_at_k": true,
+      "source_precision_at_k": 0.3333333333333333,
+      "source_recall_at_k": 1.0,
+      "citation_precision_at_k": 0.3333333333333333,
+      "citation_recall_at_k": 1.0,
       "rank": 1,
       "citation_rank": 1,
       "no_evidence": false,
+      "min_score": 0.0,
       "passed": true
     },
     {
@@ -147,11 +207,17 @@
         "[ai_data_governance_policy.md#0]",
         "[incident_response_guide.md#0]"
       ],
+      "retrieved_count": 3,
       "hit_at_k": true,
       "citation_hit_at_k": true,
+      "source_precision_at_k": 0.6666666666666666,
+      "source_recall_at_k": 1.0,
+      "citation_precision_at_k": 0.3333333333333333,
+      "citation_recall_at_k": 1.0,
       "rank": 1,
       "citation_rank": 1,
       "no_evidence": false,
+      "min_score": 0.0,
       "passed": true
     },
     {
@@ -176,11 +242,157 @@
         "[model_risk_review_playbook.md#0]",
         "[ai_data_governance_policy.md#0]"
       ],
+      "retrieved_count": 3,
       "hit_at_k": true,
       "citation_hit_at_k": true,
+      "source_precision_at_k": 0.6666666666666666,
+      "source_recall_at_k": 1.0,
+      "citation_precision_at_k": 0.3333333333333333,
+      "citation_recall_at_k": 1.0,
       "rank": 1,
       "citation_rank": 1,
       "no_evidence": false,
+      "min_score": 0.0,
+      "passed": true
+    },
+    {
+      "id": "public-01",
+      "split": "public",
+      "question": "When should in-scope organisations note the provisions of this PPN?",
+      "answerable": true,
+      "expected_source": "ppn_017_improving_transparency_of_ai_use_in_procurement.txt",
+      "expected_sources": [
+        "ppn_017_improving_transparency_of_ai_use_in_procurement.txt"
+      ],
+      "expected_citations": [
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#2]"
+      ],
+      "retrieved_sources": [
+        "ppn_017_improving_transparency_of_ai_use_in_procurement.txt",
+        "ppn_017_improving_transparency_of_ai_use_in_procurement.txt",
+        "ppn_017_improving_transparency_of_ai_use_in_procurement.txt"
+      ],
+      "retrieved_citations": [
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#2]",
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#0]",
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#1]"
+      ],
+      "retrieved_count": 3,
+      "hit_at_k": true,
+      "citation_hit_at_k": true,
+      "source_precision_at_k": 1.0,
+      "source_recall_at_k": 1.0,
+      "citation_precision_at_k": 0.3333333333333333,
+      "citation_recall_at_k": 1.0,
+      "rank": 1,
+      "citation_rank": 1,
+      "no_evidence": false,
+      "min_score": 0.0,
+      "passed": true
+    },
+    {
+      "id": "public-02",
+      "split": "public",
+      "question": "What may suppliers be asked to disclose about using AI to create a tender?",
+      "answerable": true,
+      "expected_source": "ppn_017_improving_transparency_of_ai_use_in_procurement.txt",
+      "expected_sources": [
+        "ppn_017_improving_transparency_of_ai_use_in_procurement.txt"
+      ],
+      "expected_citations": [
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#3]"
+      ],
+      "retrieved_sources": [
+        "ppn_017_improving_transparency_of_ai_use_in_procurement.txt",
+        "ppn_017_improving_transparency_of_ai_use_in_procurement.txt",
+        "ppn_017_improving_transparency_of_ai_use_in_procurement.txt"
+      ],
+      "retrieved_citations": [
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#3]",
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#14]",
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#10]"
+      ],
+      "retrieved_count": 3,
+      "hit_at_k": true,
+      "citation_hit_at_k": true,
+      "source_precision_at_k": 1.0,
+      "source_recall_at_k": 1.0,
+      "citation_precision_at_k": 0.3333333333333333,
+      "citation_recall_at_k": 1.0,
+      "rank": 1,
+      "citation_rank": 1,
+      "no_evidence": false,
+      "min_score": 0.0,
+      "passed": true
+    },
+    {
+      "id": "public-03",
+      "split": "public",
+      "question": "What additional due diligence may be needed when suppliers use AI tools to create tender responses?",
+      "answerable": true,
+      "expected_source": "ppn_017_improving_transparency_of_ai_use_in_procurement.txt",
+      "expected_sources": [
+        "ppn_017_improving_transparency_of_ai_use_in_procurement.txt"
+      ],
+      "expected_citations": [
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#3]"
+      ],
+      "retrieved_sources": [
+        "ppn_017_improving_transparency_of_ai_use_in_procurement.txt",
+        "ppn_017_improving_transparency_of_ai_use_in_procurement.txt",
+        "ppn_017_improving_transparency_of_ai_use_in_procurement.txt"
+      ],
+      "retrieved_citations": [
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#3]",
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#15]",
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#4]"
+      ],
+      "retrieved_count": 3,
+      "hit_at_k": true,
+      "citation_hit_at_k": true,
+      "source_precision_at_k": 1.0,
+      "source_recall_at_k": 1.0,
+      "citation_precision_at_k": 0.3333333333333333,
+      "citation_recall_at_k": 1.0,
+      "rank": 1,
+      "citation_rank": 1,
+      "no_evidence": false,
+      "min_score": 0.0,
+      "passed": true
+    },
+    {
+      "id": "public-04",
+      "split": "public",
+      "question": "What should a contracting authority consider about meeting records from an AI-enabled video conferencing service?",
+      "answerable": true,
+      "expected_source": "ppn_017_improving_transparency_of_ai_use_in_procurement.txt",
+      "expected_sources": [
+        "ppn_017_improving_transparency_of_ai_use_in_procurement.txt"
+      ],
+      "expected_citations": [
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#6]"
+      ],
+      "retrieved_sources": [
+        "ppn_017_improving_transparency_of_ai_use_in_procurement.txt",
+        "ppn_017_improving_transparency_of_ai_use_in_procurement.txt",
+        "ppn_017_improving_transparency_of_ai_use_in_procurement.txt"
+      ],
+      "retrieved_citations": [
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#6]",
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#16]",
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#3]"
+      ],
+      "retrieved_count": 3,
+      "hit_at_k": true,
+      "citation_hit_at_k": true,
+      "source_precision_at_k": 1.0,
+      "source_recall_at_k": 1.0,
+      "citation_precision_at_k": 0.3333333333333333,
+      "citation_recall_at_k": 1.0,
+      "rank": 1,
+      "citation_rank": 1,
+      "no_evidence": false,
+      "min_score": 0.0,
       "passed": true
     },
     {
@@ -197,19 +409,25 @@
       ],
       "retrieved_sources": [
         "ai_data_governance_policy.md",
-        "model_risk_review_playbook.md",
-        "incident_response_guide.md"
+        "ppn_017_improving_transparency_of_ai_use_in_procurement.txt",
+        "ppn_017_improving_transparency_of_ai_use_in_procurement.txt"
       ],
       "retrieved_citations": [
         "[ai_data_governance_policy.md#0]",
-        "[model_risk_review_playbook.md#0]",
-        "[incident_response_guide.md#0]"
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#12]",
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#13]"
       ],
+      "retrieved_count": 3,
       "hit_at_k": true,
       "citation_hit_at_k": true,
+      "source_precision_at_k": 0.3333333333333333,
+      "source_recall_at_k": 1.0,
+      "citation_precision_at_k": 0.3333333333333333,
+      "citation_recall_at_k": 1.0,
       "rank": 1,
       "citation_rank": 1,
       "no_evidence": false,
+      "min_score": 0.0,
       "passed": true
     },
     {
@@ -225,16 +443,24 @@
         "[model_risk_review_playbook.md#0]"
       ],
       "retrieved_sources": [
-        "model_risk_review_playbook.md"
+        "model_risk_review_playbook.md",
+        "ppn_017_improving_transparency_of_ai_use_in_procurement.txt"
       ],
       "retrieved_citations": [
-        "[model_risk_review_playbook.md#0]"
+        "[model_risk_review_playbook.md#0]",
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#4]"
       ],
+      "retrieved_count": 2,
       "hit_at_k": true,
       "citation_hit_at_k": true,
+      "source_precision_at_k": 0.5,
+      "source_recall_at_k": 1.0,
+      "citation_precision_at_k": 0.5,
+      "citation_recall_at_k": 1.0,
       "rank": 1,
       "citation_rank": 1,
       "no_evidence": false,
+      "min_score": 0.0,
       "passed": true
     },
     {
@@ -251,19 +477,25 @@
       ],
       "retrieved_sources": [
         "incident_response_guide.md",
-        "ai_data_governance_policy.md",
-        "ai_data_governance_policy.md"
+        "ppn_017_improving_transparency_of_ai_use_in_procurement.txt",
+        "ppn_017_improving_transparency_of_ai_use_in_procurement.txt"
       ],
       "retrieved_citations": [
         "[incident_response_guide.md#0]",
-        "[ai_data_governance_policy.md#1]",
-        "[ai_data_governance_policy.md#0]"
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#3]",
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#15]"
       ],
+      "retrieved_count": 3,
       "hit_at_k": true,
       "citation_hit_at_k": true,
+      "source_precision_at_k": 0.3333333333333333,
+      "source_recall_at_k": 1.0,
+      "citation_precision_at_k": 0.3333333333333333,
+      "citation_recall_at_k": 1.0,
       "rank": 1,
       "citation_rank": 1,
       "no_evidence": false,
+      "min_score": 0.0,
       "passed": true
     },
     {
@@ -286,11 +518,17 @@
         "[model_risk_review_playbook.md#0]",
         "[model_risk_review_playbook.md#1]"
       ],
+      "retrieved_count": 2,
       "hit_at_k": true,
       "citation_hit_at_k": true,
+      "source_precision_at_k": 1.0,
+      "source_recall_at_k": 1.0,
+      "citation_precision_at_k": 0.5,
+      "citation_recall_at_k": 1.0,
       "rank": 1,
       "citation_rank": 2,
       "no_evidence": false,
+      "min_score": 0.0,
       "passed": true
     },
     {
@@ -303,28 +541,40 @@
       "expected_citations": [],
       "retrieved_sources": [],
       "retrieved_citations": [],
+      "retrieved_count": 0,
       "hit_at_k": null,
       "citation_hit_at_k": null,
+      "source_precision_at_k": null,
+      "source_recall_at_k": null,
+      "citation_precision_at_k": null,
+      "citation_recall_at_k": null,
       "rank": null,
       "citation_rank": null,
       "no_evidence": true,
+      "min_score": 0.0,
       "passed": true
     },
     {
       "id": "heldout-06",
       "split": "held_out",
-      "question": "Which tax form is required for contractor payments?",
+      "question": "What is the recipe for sourdough starter hydration?",
       "answerable": false,
       "expected_source": null,
       "expected_sources": [],
       "expected_citations": [],
       "retrieved_sources": [],
       "retrieved_citations": [],
+      "retrieved_count": 0,
       "hit_at_k": null,
       "citation_hit_at_k": null,
+      "source_precision_at_k": null,
+      "source_recall_at_k": null,
+      "citation_precision_at_k": null,
+      "citation_recall_at_k": null,
       "rank": null,
       "citation_rank": null,
       "no_evidence": true,
+      "min_score": 0.0,
       "passed": true
     }
   ]

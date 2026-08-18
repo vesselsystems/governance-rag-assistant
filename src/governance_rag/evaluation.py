@@ -1,10 +1,13 @@
-"""Offline retrieval evaluation, including abstention and chunk checks."""
+"""Offline retrieval and adversarial-fixture evaluation helpers."""
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
-from .retrieval import TfidfRetriever
+from .corpus import DocumentChunk
+from .generation import build_prompt, validate_generated_answer
+from .retrieval import RetrievedChunk, TfidfRetriever
 
 
 def _as_strings(value: Any) -> list[str]:
@@ -33,6 +36,10 @@ def _expected_citations(item: dict[str, Any], expected_sources: list[str]) -> li
     return []
 
 
+def _mean(values: list[float]) -> float:
+    return float(sum(values) / len(values)) if values else 0.0
+
+
 def _summarize(rows: list[dict[str, Any]]) -> dict[str, float]:
     answerable = [row for row in rows if row["answerable"]]
     unanswerable = [row for row in rows if not row["answerable"]]
@@ -41,6 +48,26 @@ def _summarize(rows: list[dict[str, Any]]) -> dict[str, float]:
     ranked_answerable = [row for row in answerable if row["rank"] is not None]
     citation_cases = [row for row in answerable if row["expected_citations"]]
     citation_hits = [row["citation_hit_at_k"] for row in citation_cases]
+    source_precision = [
+        row["source_precision_at_k"]
+        for row in answerable
+        if row["source_precision_at_k"] is not None
+    ]
+    source_recall = [
+        row["source_recall_at_k"]
+        for row in answerable
+        if row["source_recall_at_k"] is not None
+    ]
+    citation_precision = [
+        row["citation_precision_at_k"]
+        for row in citation_cases
+        if row["citation_precision_at_k"] is not None
+    ]
+    citation_recall = [
+        row["citation_recall_at_k"]
+        for row in citation_cases
+        if row["citation_recall_at_k"] is not None
+    ]
     passed = sum(1 for row in rows if row["passed"])
     correct_abstentions = sum(1 for row in unanswerable if row["no_evidence"])
 
@@ -51,16 +78,23 @@ def _summarize(rows: list[dict[str, Any]]) -> dict[str, float]:
         "questions": float(len(rows)),
         "answerable_questions": float(len(answerable)),
         "unanswerable_questions": float(len(unanswerable)),
-        "hit_at_k": float(sum(source_hits) / len(source_hits)) if source_hits else 0.0,
-        "mean_reciprocal_rank": (
-            sum(reciprocal_ranks) / len(answerable) if answerable else 0.0
-        ),
+        "hit_at_k": _mean([float(value) for value in source_hits]),
+        "mean_reciprocal_rank": _mean(reciprocal_ranks),
         "citation_evaluated_questions": float(len(citation_cases)),
-        "citation_hit_at_k": (
-            float(sum(citation_hits) / len(citation_hits)) if citation_hits else 0.0
-        ),
+        "citation_hit_at_k": _mean([float(value) for value in citation_hits]),
+        "source_precision_at_k": _mean([float(value) for value in source_precision]),
+        "source_recall_at_k": _mean([float(value) for value in source_recall]),
+        "citation_precision_at_k": _mean([float(value) for value in citation_precision]),
+        "citation_recall_at_k": _mean([float(value) for value in citation_recall]),
         "unanswerable_no_evidence_rate": (
             float(correct_abstentions / len(unanswerable)) if unanswerable else 0.0
+        ),
+        # Alias with an explicit name for consumers that call no-result behavior abstention.
+        "unanswerable_abstention_rate": (
+            float(correct_abstentions / len(unanswerable)) if unanswerable else 0.0
+        ),
+        "retrieval_nonempty_rate": (
+            float(sum(1 for row in rows if not row["no_evidence"]) / len(rows)) if rows else 0.0
         ),
         "case_pass_rate": float(passed / len(rows)) if rows else 0.0,
         # This count makes it clear when MRR includes a zero for a miss.
@@ -68,23 +102,43 @@ def _summarize(rows: list[dict[str, Any]]) -> dict[str, float]:
     }
 
 
+def _precision_at_k(retrieved: list[str], expected: list[str]) -> float | None:
+    if not expected:
+        return None
+    if not retrieved:
+        return 0.0
+    expected_set = set(expected)
+    return float(sum(value in expected_set for value in retrieved) / len(retrieved))
+
+
+def _recall_at_k(retrieved: list[str], expected: list[str]) -> float | None:
+    if not expected:
+        return None
+    expected_set = set(expected)
+    if not expected_set:
+        return None
+    return float(len(set(retrieved) & expected_set) / len(expected_set))
+
+
 def evaluate_retrieval(
     questions: list[dict[str, Any]],
     retriever: TfidfRetriever,
     top_k: int = 3,
+    *,
+    min_score: float = 0.0,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
-    """Evaluate source retrieval, expected chunks, and unanswerable cases.
+    """Evaluate source/chunk retrieval and explicitly labeled unanswerable cases.
 
-    Existing records with ``expected_source`` remain valid.  New records can set
-    ``answerable`` to ``false`` and omit labels, or add ``expected_citations``
-    for an exact chunk-level check.  Retrieval metrics do not assess generated
-    answer correctness or citation entailment.
+    Source precision/recall are defined only for records with expected source
+    labels.  Citation precision/recall are defined only for exact expected
+    citation labels.  These are retrieval metrics, not generated-answer or
+    entailment metrics.
     """
     rows: list[dict[str, Any]] = []
 
     for item in questions:
         question = str(item["question"])
-        results = retriever.retrieve(question, top_k=top_k)
+        results = retriever.retrieve(question, top_k=top_k, min_score=min_score)
         sources = [result.chunk.source for result in results]
         citations = [result.chunk.citation for result in results]
         expected_source_value = item.get("expected_source")
@@ -134,11 +188,25 @@ def evaluate_retrieval(
                 "expected_citations": expected_citations,
                 "retrieved_sources": sources,
                 "retrieved_citations": citations,
+                "retrieved_count": len(results),
                 "hit_at_k": primary_hit if answerable else None,
                 "citation_hit_at_k": citation_hit if answerable else None,
+                "source_precision_at_k": (
+                    _precision_at_k(sources, expected_sources) if answerable else None
+                ),
+                "source_recall_at_k": (
+                    _recall_at_k(sources, expected_sources) if answerable else None
+                ),
+                "citation_precision_at_k": (
+                    _precision_at_k(citations, expected_citations) if answerable else None
+                ),
+                "citation_recall_at_k": (
+                    _recall_at_k(citations, expected_citations) if answerable else None
+                ),
                 "rank": rank if answerable else None,
                 "citation_rank": citation_rank if answerable else None,
                 "no_evidence": not results,
+                "min_score": min_score,
                 "passed": passed,
             }
         )
@@ -148,5 +216,80 @@ def evaluate_retrieval(
     metrics["by_split"] = {
         split: _summarize([row for row in rows if row["split"] == split])
         for split in splits
+    }
+    return rows, metrics
+
+
+def evaluate_adversarial_fixtures(
+    cases: list[dict[str, Any]],
+    root: Path,
+) -> tuple[list[dict[str, Any]], dict[str, float]]:
+    """Run deterministic checks over prompt-injection/poisoning fixtures.
+
+    This does not call a model and therefore does not measure model resistance.
+    It verifies that fixtures are present, prompt boundaries identify their text
+    as untrusted, and representative unsafe provider output is rejected by the
+    generation gate.
+    """
+    rows: list[dict[str, Any]] = []
+    for item in cases:
+        fixture_path = root / str(item["fixture"])
+        exists = fixture_path.is_file()
+        text = fixture_path.read_text(encoding="utf-8") if exists else ""
+        fixture_chunk = DocumentChunk(
+            chunk_id="fixture",
+            source=fixture_path.name,
+            text=text,
+        )
+        result = RetrievedChunk(chunk=fixture_chunk, score=1.0)
+        prompts = build_prompt(str(item["question"]), [result])
+        system_prompt = prompts[0]["content"]
+        user_prompt = prompts[1]["content"]
+        marker_present = any(
+            marker in text.lower()
+            for marker in (
+                "ignore all previous instructions",
+                "system message",
+                "reveal",
+                "must obey",
+                "override",
+            )
+        )
+        prompt_boundary = (
+            "UNTRUSTED" in system_prompt
+            and "not system, developer, or user instructions" in system_prompt
+            and "BEGIN UNTRUSTED RETRIEVED DOCUMENT" in user_prompt
+        )
+        unsafe_response = item.get("unsafe_response")
+        if isinstance(unsafe_response, str):
+            unsafe_response = unsafe_response.replace("{citation}", result.chunk.citation)
+        unsafe_rejected = not validate_generated_answer(unsafe_response, [result])
+        passed = exists and marker_present and prompt_boundary and unsafe_rejected
+        rows.append(
+            {
+                "id": item.get("id"),
+                "category": item.get("category"),
+                "fixture": str(item["fixture"]),
+                "fixture_present": exists,
+                "adversarial_marker_present": marker_present,
+                "prompt_boundary_check": prompt_boundary,
+                "unsafe_generation_rejected": unsafe_rejected,
+                "passed": passed,
+            }
+        )
+
+    total = len(rows)
+    metrics = {
+        "fixture_count": float(total),
+        "fixture_presence_rate": _mean(
+            [float(row["fixture_present"]) for row in rows]
+        ),
+        "prompt_boundary_check_rate": _mean(
+            [float(row["prompt_boundary_check"]) for row in rows]
+        ),
+        "unsafe_generation_rejection_rate": _mean(
+            [float(row["unsafe_generation_rejected"]) for row in rows]
+        ),
+        "case_pass_rate": _mean([float(row["passed"]) for row in rows]),
     }
     return rows, metrics
