@@ -63,7 +63,8 @@ def test_evaluation_questions_cover_held_out_and_unanswerable_cases() -> None:
     assert metrics["source_precision_at_k"] >= 0.0
     assert metrics["source_recall_at_k"] >= 0.8
     assert metrics["citation_recall_at_k"] >= 0.8
-    assert metrics["unanswerable_no_evidence_rate"] == 1.0
+    assert metrics["retrieval_no_evidence_rate"] == 1.0
+    assert all("abstention_rate" not in key for key in metrics)
     assert metrics["by_split"]["held_out"]["unanswerable_questions"] == 2.0
     assert metrics["by_split"]["public"]["questions"] == 4.0
     assert metrics["by_split"]["public"]["case_pass_rate"] == 1.0
@@ -71,6 +72,22 @@ def test_evaluation_questions_cover_held_out_and_unanswerable_cases() -> None:
 
 def test_no_evidence_is_explicit() -> None:
     assert evidence_only_draft([]) == NO_EVIDENCE
+
+
+def test_unknown_question_abstains_without_provider() -> None:
+    retriever = TfidfRetriever.from_directory(CORPUS)
+    results = retriever.retrieve("What is the reimbursement limit for international travel?")
+
+    answer, mode = answer_question(
+        "What is the reimbursement limit for international travel?",
+        results,
+        api_key="not-used",
+        model="not-used",
+    )
+
+    assert results == []
+    assert answer == NO_EVIDENCE
+    assert mode == "evidence-only"
 
 
 def test_malformed_provider_output_falls_back(monkeypatch) -> None:

@@ -25,6 +25,8 @@ jobs:
         run: python scripts/evaluate_retrieval.py
       - name: Validate generation gate
         run: python scripts/validate_generation.py
+      - name: Validate claim JSON Schema and evidence-contract status
+        run: python scripts/evaluate_claims.py
       - name: Run adversarial fixture checks
         run: python scripts/evaluate_adversarial.py
       - name: Lint

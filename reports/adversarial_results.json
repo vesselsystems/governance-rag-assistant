@@ -1,4 +1,28 @@
 {
+  "metadata": {
+    "generated_at_utc": "2026-08-19T00:07:19Z",
+    "timestamp_utc": "2026-08-19T00:07:19Z",
+    "corpus_manifest_sha256": "de302fe1a5704f89fc6ed31896c5b72e23f95f57480dd0f704221ccbf7abbcf9",
+    "corpus_manifest_hash": "de302fe1a5704f89fc6ed31896c5b72e23f95f57480dd0f704221ccbf7abbcf9",
+    "corpus_manifest_path": "data/corpus_manifest.json",
+    "code_revision": "3b1a278b070350b49d2e2936f1af61db0b7cd415",
+    "working_tree_dirty": true,
+    "config": {
+      "evaluation_file": "evaluation/adversarial_questions.json"
+    }
+  },
+  "scope": {
+    "name": "offline_adversarial_fixture_controls",
+    "model_resistance": "not measured; no model was called",
+    "claim_metrics": "not measured; pending human annotation"
+  },
+  "measured_metrics": {
+    "fixture_count": 2.0,
+    "fixture_presence_rate": 1.0,
+    "prompt_boundary_check_rate": 1.0,
+    "unsafe_generation_rejection_rate": 1.0,
+    "case_pass_rate": 1.0
+  },
   "metrics": {
     "fixture_count": 2.0,
     "fixture_presence_rate": 1.0,

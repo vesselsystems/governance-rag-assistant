@@ -1,2 +1,6 @@
-# Preserve the exact bytes emitted by the verified PDF text extraction.
+# Preserve the exact bytes emitted by the recorded PDF text extraction.
 data/documents/ppn_017_improving_transparency_of_ai_use_in_procurement.txt -text
+
+# Keep manifest/report input bytes stable across Windows and Linux checkouts.
+data/corpus_manifest.json text eol=lf
+evaluation/*.json text eol=lf

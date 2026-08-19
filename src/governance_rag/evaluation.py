@@ -69,7 +69,7 @@ def _summarize(rows: list[dict[str, Any]]) -> dict[str, float]:
         if row["citation_recall_at_k"] is not None
     ]
     passed = sum(1 for row in rows if row["passed"])
-    correct_abstentions = sum(1 for row in unanswerable if row["no_evidence"])
+    unanswerable_without_evidence = sum(1 for row in unanswerable if row["no_evidence"])
 
     reciprocal_ranks = [
         1 / row["rank"] if row["rank"] is not None else 0.0 for row in answerable
@@ -86,12 +86,10 @@ def _summarize(rows: list[dict[str, Any]]) -> dict[str, float]:
         "source_recall_at_k": _mean([float(value) for value in source_recall]),
         "citation_precision_at_k": _mean([float(value) for value in citation_precision]),
         "citation_recall_at_k": _mean([float(value) for value in citation_recall]),
-        "unanswerable_no_evidence_rate": (
-            float(correct_abstentions / len(unanswerable)) if unanswerable else 0.0
-        ),
-        # Alias with an explicit name for consumers that call no-result behavior abstention.
-        "unanswerable_abstention_rate": (
-            float(correct_abstentions / len(unanswerable)) if unanswerable else 0.0
+        "retrieval_no_evidence_rate": (
+            float(unanswerable_without_evidence / len(unanswerable))
+            if unanswerable
+            else 0.0
         ),
         "retrieval_nonempty_rate": (
             float(sum(1 for row in rows if not row["no_evidence"]) / len(rows)) if rows else 0.0

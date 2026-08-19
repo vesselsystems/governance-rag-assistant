@@ -9,6 +9,7 @@ reports/*.json
 !reports/retrieval_results.json
 !reports/generation_validation.json
 !reports/adversarial_results.json
+!reports/claim_evaluation.json
 reports/*.csv
 .DS_Store
 Thumbs.db

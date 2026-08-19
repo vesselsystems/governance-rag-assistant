@@ -17,18 +17,18 @@ app returns that evidence-only draft.
 ## Corpus status and provenance
 
 The indexed corpus deliberately keeps source types separate: three **repository-authored demo
-teaching artifacts** and one **official external snapshot** from the UK Cabinet Office,
-[PPN 017: Improving transparency of AI use in procurement](https://www.gov.uk/government/publications/ppn-017-improving-transparency-of-ai-use-in-procurement).
-The demo files are not an organization's policy or legal advice. The PPN snapshot is public source
-material with its own [Open Government Licence v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)
+teaching artifacts** and one locally stored text snapshot whose metadata points to the UK Cabinet
+Office publication [PPN 017: Improving transparency of AI use in procurement](https://www.gov.uk/government/publications/ppn-017-improving-transparency-of-ai-use-in-procurement).
+The demo files are not an organization's policy or legal advice. The PPN source material has its
+own [Open Government Licence v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)
 terms; the code's MIT licence is not silently applied to it.
 
-[`data/corpus_manifest.json`](data/corpus_manifest.json) records the verified source and revision,
-per-file extracted-text SHA-256 checksums, the PPN PDF URL and raw PDF SHA-256, publisher, licence
-terms URL, and retrieval date. The loader verifies every local snapshot against those checksums,
-attaches the metadata to retrieved chunks, and never downloads manifest URLs. See
-[`data/documents/README.md`](data/documents/README.md) for the complete source record and
-replacement checklist.
+[`data/corpus_manifest.json`](data/corpus_manifest.json) records source metadata, the PPN raw-source
+SHA-256 from the acquisition record, and per-file extracted-text SHA-256 checksums. The loader
+locally checksum-verifies every indexed text snapshot, attaches metadata to retrieved chunks, and
+never downloads manifest URLs. Raw-source and public-licence verification are explicitly
+out-of-band and not reproducible in this workspace. See [`data/documents/README.md`](data/documents/README.md)
+for the source record and replacement checklist.
 
 ## Quick start
 
@@ -41,6 +41,7 @@ python -m pip install -e ".[dev]"
 python scripts/verify_corpus_manifest.py
 python scripts/evaluate_retrieval.py
 python scripts/validate_generation.py
+python scripts/evaluate_claims.py
 python scripts/evaluate_adversarial.py
 streamlit run app.py
 ```
@@ -60,7 +61,7 @@ necessary review and approval.
 ## Architecture and safety boundary
 
 ```text
-Demo Markdown + verified official PPN snapshot + manifest
+Demo Markdown + locally checksum-verified text snapshot + manifest
         │
         ▼
 clean + deterministic word chunks
@@ -89,9 +90,13 @@ provider quoting. This is a rendering safeguard, not a content trust decision.
 ## Evaluation
 
 `evaluation/questions.json` is a small, hand-authored set with `dev`, `public`, and manually
-held-out splits. It includes questions labeled against the three demo files and the verified PPN
-snapshot, plus explicitly unanswerable questions. The set is a repeatable regression check, not
-an independently collected benchmark.
+held-out splits. It includes questions labeled against the three demo files and the locally stored
+PPN text snapshot, plus explicitly unanswerable questions. The set is a repeatable regression
+check, not an independently collected benchmark. The separate
+`evaluation/evidence_contract_cases.json` covers four case types—answerable, unanswerable,
+adversarial, and ambiguous. Unsupported-claim and citation-error examples are failure-mode
+fixtures inside those four types, not additional categories, and do not change the retrieval
+denominator.
 
 Run `python scripts/evaluate_retrieval.py` to regenerate `reports/retrieval_results.json`. The
 report defines and separates:
@@ -99,11 +104,20 @@ report defines and separates:
 - source hit@3 and mean reciprocal rank;
 - source precision/recall@3 where source labels are present;
 - exact expected-citation hit, precision, and recall@3 where chunk labels are present;
-- the rate of unanswerable cases with no lexical evidence.
+- `retrieval_no_evidence_rate`: the rate of explicitly unanswerable cases with no lexical
+  evidence; this is a retrieval observation, not an abstention-correctness judgment.
 
 `python scripts/validate_generation.py` separately exercises the provider-output gate with valid,
 missing-citation, wrong-citation, instruction-like, and malformed cases. It does not call a model
 and does not measure claim entailment, citation completeness, or generated-answer quality.
+
+`python scripts/evaluate_claims.py` validates the declared JSON Schema and the manual validator,
+then emits a report with measured reviewer labels and pending-human-review items kept distinct.
+The checked-in annotation set is intentionally all pending; no claim or evidence reference is
+independently labeled. Immutable fixture content is bound by field comparison and canonical hash.
+See
+[`docs/annotation_protocol.md`](docs/annotation_protocol.md) and
+[`docs/ingestion_update.md`](docs/ingestion_update.md).
 
 `python scripts/evaluate_adversarial.py` separately checks the synthetic fixtures, untrusted
 prompt delimiters, and rejection of representative unsafe output. It is a static/offline safety
@@ -137,13 +151,18 @@ and [`reports/first_run.md`](reports/first_run.md).
 ├── evaluation/
 │   ├── questions.json
 │   ├── generation_cases.json
-│   └── adversarial_questions.json
+│   ├── adversarial_questions.json
+│   ├── evidence_contract_cases.json
+│   ├── claim_annotations.schema.json
+│   └── claim_annotations.json       # pending human review; no gold claims
 ├── reports/
 ├── scripts/
 ├── src/governance_rag/
+│   ├── annotations.py                 # claim labels and pending-review accounting
 │   ├── corpus.py
-│   ├── evaluation.py
+│   ├── evaluation.py                  # retrieval/adversarial metrics
 │   ├── generation.py
+│   ├── reporting.py                   # manifest/revision/timestamp metadata
 │   └── retrieval.py
 └── tests/
 ```
@@ -154,7 +173,13 @@ and [`reports/first_run.md`](reports/first_run.md).
 2. Have reviewers label claim support and citation completeness for generated answers.
 3. Expand adversarial fixtures and run model-backed tests in an approved isolated environment.
 4. Measure provider-specific quality, latency, and cost separately from retrieval metrics.
-5. Review the external PPN snapshot's source terms before any redistribution or consequential use.
+5. Have approved reviewers complete the evidence-contract annotations before treating claim metrics
+   as results.
+6. Review the external PPN snapshot's source terms before any redistribution or consequential use.
+
+Project 3's corpus/index and reports remain separate from Project 4; see
+[`docs/project_boundaries.md`](docs/project_boundaries.md). No larger corpus or Project 4 result
+is claimed here.
 
 ## License
 

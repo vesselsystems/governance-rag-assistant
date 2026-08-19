@@ -1,10 +1,10 @@
 # Offline baseline run
 
 Run date: 2026-08-18. Configuration: local TF-IDF baseline, deterministic word-window
-chunking, top-k = 3, with the SHA-256-verified corpus manifest. The corpus contains three
-repository-authored demo teaching artifacts and one separately marked UK Cabinet Office PPN 017
-text snapshot. The PPN source record, OGL v3.0 terms, extracted-text SHA-256, and raw PDF
-SHA-256 are in [`../data/corpus_manifest.json`](../data/corpus_manifest.json) and
+chunking, top-k = 3, with locally checksum-verified extracted text. The corpus contains three
+repository-authored demo teaching artifacts and one separately classified UK Cabinet Office PPN
+017 text snapshot. The PPN source record, OGL v3.0 metadata, extracted-text SHA-256, and recorded
+raw-source SHA-256 are in [`../data/corpus_manifest.json`](../data/corpus_manifest.json) and
 [`../data/documents/README.md`](../data/documents/README.md).
 
 ## Retrieval result
@@ -26,7 +26,7 @@ retrieval or RAG quality.
 | Exact expected-citation hit@3 | 1.00 |
 | Exact citation precision@3 | 0.359 |
 | Exact citation recall@3 | 1.00 |
-| Unanswerable no-evidence rate | 1.00 |
+| Retrieval no-evidence rate | 1.00 |
 | Case pass rate | 1.00 |
 
 The `public` split has four answerable PPN cases. Its source precision@3 is 1.00 and exact
@@ -36,7 +36,9 @@ citation precision@3 is 0.417, with both recall figures and hit@3 at 1.00. The `
 source precision@3 of 0.467 and exact citation precision@3 of 0.333. These small-set precision
 figures show why hit@k alone would be misleading.
 
-The source and citation figures are retrieval-label checks. The run did not call a provider and
+The source and citation figures are retrieval-label checks. The retrieval no-evidence figure is
+not an abstention-correctness result; abstention correctness belongs only to pending claim
+annotations. The run did not call a provider and
 does not measure generated-answer correctness, claim support, citation completeness, prompt-
 injection resistance, latency, or cost. The two unanswerable cases have no positive lexical match;
 this is not a general out-of-domain detector.
@@ -53,11 +55,30 @@ prompt-injection and document-poisoning text: fixture presence, explicit untrust
 boundaries, and rejection of representative unsafe output. No model was called, so this is not a
 prompt-injection-resistance result.
 
+## Evidence-contract status
+
+The versioned claim annotation set is intentionally **pending human review**. It contains six
+held-out fixtures across four case types (answerable, unanswerable, adversarial, and ambiguous).
+Unsupported-claim and citation-error examples are failure modes within those types. There are five
+candidate claims, 26 unresolved label fields, and five unresolved evidence-reference statuses. No
+claim support, citation completeness/precision, unsupported-claim, or abstention result is reported;
+the claim report emits `null` rates until an approved reviewer supplies labels and identity.
+Pending evidence references also keep claim review incomplete. Raw-source and public-licence
+verification remain out-of-band and are not reproducible in this workspace.
+See [`../docs/annotation_protocol.md`](../docs/annotation_protocol.md) and
+[`claim_evaluation.json`](claim_evaluation.json). The claim report is scoped to the same
+manifest metadata but does not copy retrieval or Project 4 results.
+
+The generated JSON reports record the corpus manifest SHA-256, available git revision, timestamp,
+and configuration. The working tree was dirty when these local artifacts were generated, so the
+revision is context rather than a claim that an immutable release was evaluated.
+
 Regenerate the artifacts with:
 
 ```bash
 python scripts/verify_corpus_manifest.py
 python scripts/evaluate_retrieval.py
 python scripts/validate_generation.py
+python scripts/evaluate_claims.py
 python scripts/evaluate_adversarial.py
 ```

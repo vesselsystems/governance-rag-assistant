@@ -1,11 +1,37 @@
 {
+  "metadata": {
+    "generated_at_utc": "2026-08-19T00:07:11Z",
+    "timestamp_utc": "2026-08-19T00:07:11Z",
+    "corpus_manifest_sha256": "de302fe1a5704f89fc6ed31896c5b72e23f95f57480dd0f704221ccbf7abbcf9",
+    "corpus_manifest_hash": "de302fe1a5704f89fc6ed31896c5b72e23f95f57480dd0f704221ccbf7abbcf9",
+    "corpus_manifest_path": "data/corpus_manifest.json",
+    "code_revision": "3b1a278b070350b49d2e2936f1af61db0b7cd415",
+    "working_tree_dirty": true,
+    "config": {
+      "evaluation_file": "evaluation/questions.json",
+      "top_k": 3,
+      "min_score": 0.0
+    }
+  },
+  "scope": {
+    "name": "retrieval_labels",
+    "generation_metrics": "not measured",
+    "claim_metrics": "not measured; pending human annotation"
+  },
   "corpus": {
     "corpus_id": "governance-demo-and-ppn017",
-    "status": "external_corpus_verified",
-    "verified_documents": 4,
-    "verified_external_documents": 1
+    "status": "local_text_checksum_verified",
+    "verification_scope": {
+      "local_text_checksum": "local_checksum_verified",
+      "raw_source": "out_of_band_not_reproducible",
+      "public_license": "out_of_band_not_reproducible"
+    },
+    "checksum_verified_documents": 4,
+    "checksum_verified_external_documents": 1,
+    "raw_source_verification": "out_of_band_not_reproducible",
+    "public_license_verification": "out_of_band_not_reproducible"
   },
-  "metrics": {
+  "measured_metrics": {
     "questions": 15.0,
     "answerable_questions": 13.0,
     "unanswerable_questions": 2.0,
@@ -17,8 +43,7 @@
     "source_recall_at_k": 1.0,
     "citation_precision_at_k": 0.3589743589743589,
     "citation_recall_at_k": 1.0,
-    "unanswerable_no_evidence_rate": 1.0,
-    "unanswerable_abstention_rate": 1.0,
+    "retrieval_no_evidence_rate": 1.0,
     "retrieval_nonempty_rate": 0.8666666666666667,
     "case_pass_rate": 1.0,
     "ranked_answerable_questions": 13.0,
@@ -35,8 +60,7 @@
         "source_recall_at_k": 1.0,
         "citation_precision_at_k": 0.3333333333333333,
         "citation_recall_at_k": 1.0,
-        "unanswerable_no_evidence_rate": 0.0,
-        "unanswerable_abstention_rate": 0.0,
+        "retrieval_no_evidence_rate": 0.0,
         "retrieval_nonempty_rate": 1.0,
         "case_pass_rate": 1.0,
         "ranked_answerable_questions": 5.0
@@ -53,8 +77,7 @@
         "source_recall_at_k": 1.0,
         "citation_precision_at_k": 0.41666666666666663,
         "citation_recall_at_k": 1.0,
-        "unanswerable_no_evidence_rate": 1.0,
-        "unanswerable_abstention_rate": 1.0,
+        "retrieval_no_evidence_rate": 1.0,
         "retrieval_nonempty_rate": 0.6666666666666666,
         "case_pass_rate": 1.0,
         "ranked_answerable_questions": 4.0
@@ -71,8 +94,77 @@
         "source_recall_at_k": 1.0,
         "citation_precision_at_k": 0.3333333333333333,
         "citation_recall_at_k": 1.0,
-        "unanswerable_no_evidence_rate": 0.0,
-        "unanswerable_abstention_rate": 0.0,
+        "retrieval_no_evidence_rate": 0.0,
+        "retrieval_nonempty_rate": 1.0,
+        "case_pass_rate": 1.0,
+        "ranked_answerable_questions": 4.0
+      }
+    }
+  },
+  "metrics": {
+    "questions": 15.0,
+    "answerable_questions": 13.0,
+    "unanswerable_questions": 2.0,
+    "hit_at_k": 1.0,
+    "mean_reciprocal_rank": 1.0,
+    "citation_evaluated_questions": 13.0,
+    "citation_hit_at_k": 1.0,
+    "source_precision_at_k": 0.6538461538461539,
+    "source_recall_at_k": 1.0,
+    "citation_precision_at_k": 0.3589743589743589,
+    "citation_recall_at_k": 1.0,
+    "retrieval_no_evidence_rate": 1.0,
+    "retrieval_nonempty_rate": 0.8666666666666667,
+    "case_pass_rate": 1.0,
+    "ranked_answerable_questions": 13.0,
+    "by_split": {
+      "dev": {
+        "questions": 5.0,
+        "answerable_questions": 5.0,
+        "unanswerable_questions": 0.0,
+        "hit_at_k": 1.0,
+        "mean_reciprocal_rank": 1.0,
+        "citation_evaluated_questions": 5.0,
+        "citation_hit_at_k": 1.0,
+        "source_precision_at_k": 0.4666666666666666,
+        "source_recall_at_k": 1.0,
+        "citation_precision_at_k": 0.3333333333333333,
+        "citation_recall_at_k": 1.0,
+        "retrieval_no_evidence_rate": 0.0,
+        "retrieval_nonempty_rate": 1.0,
+        "case_pass_rate": 1.0,
+        "ranked_answerable_questions": 5.0
+      },
+      "held_out": {
+        "questions": 6.0,
+        "answerable_questions": 4.0,
+        "unanswerable_questions": 2.0,
+        "hit_at_k": 1.0,
+        "mean_reciprocal_rank": 1.0,
+        "citation_evaluated_questions": 4.0,
+        "citation_hit_at_k": 1.0,
+        "source_precision_at_k": 0.5416666666666666,
+        "source_recall_at_k": 1.0,
+        "citation_precision_at_k": 0.41666666666666663,
+        "citation_recall_at_k": 1.0,
+        "retrieval_no_evidence_rate": 1.0,
+        "retrieval_nonempty_rate": 0.6666666666666666,
+        "case_pass_rate": 1.0,
+        "ranked_answerable_questions": 4.0
+      },
+      "public": {
+        "questions": 4.0,
+        "answerable_questions": 4.0,
+        "unanswerable_questions": 0.0,
+        "hit_at_k": 1.0,
+        "mean_reciprocal_rank": 1.0,
+        "citation_evaluated_questions": 4.0,
+        "citation_hit_at_k": 1.0,
+        "source_precision_at_k": 1.0,
+        "source_recall_at_k": 1.0,
+        "citation_precision_at_k": 0.3333333333333333,
+        "citation_recall_at_k": 1.0,
+        "retrieval_no_evidence_rate": 0.0,
         "retrieval_nonempty_rate": 1.0,
         "case_pass_rate": 1.0,
         "ranked_answerable_questions": 4.0

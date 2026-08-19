@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 
 from governance_rag.generation import validate_generated_answer
+from governance_rag.reporting import build_run_metadata
 from governance_rag.retrieval import TfidfRetriever
 
 if __name__ == "__main__":
@@ -42,7 +43,25 @@ if __name__ == "__main__":
         ),
         "scope": "structural provider-output validation only; no model was called",
     }
-    report = {"metrics": metrics, "rows": rows}
+    report = {
+        "metadata": build_run_metadata(
+            root,
+            manifest_path=root / "data" / "corpus_manifest.json",
+            config={
+                "evaluation_file": "evaluation/generation_cases.json",
+                "retrieval_question": "What belongs in an approval record?",
+                "top_k": 3,
+            },
+        ),
+        "scope": {
+            "name": "structural_generation_gate",
+            "claim_metrics": "not measured; pending human annotation",
+            "retrieval_metrics": "not measured by this script",
+        },
+        "measured_metrics": metrics,
+        "metrics": metrics,
+        "rows": rows,
+    }
     report_dir = root / "reports"
     report_dir.mkdir(exist_ok=True)
     (report_dir / "generation_validation.json").write_text(

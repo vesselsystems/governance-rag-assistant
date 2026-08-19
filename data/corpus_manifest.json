@@ -1,8 +1,13 @@
 {
   "schema_version": 1,
   "corpus_id": "governance-demo-and-ppn017",
-  "status": "external_corpus_verified",
+  "status": "local_text_checksum_verified",
   "blocker": null,
+  "verification_scope": {
+    "local_text_checksum": "local_checksum_verified",
+    "raw_source": "out_of_band_not_reproducible",
+    "public_license": "out_of_band_not_reproducible"
+  },
   "documents": [
     {
       "path": "documents/ai_data_governance_policy.md",
@@ -60,9 +65,10 @@
       "revision": "Updated February 2025",
       "retrieval_date": "2026-08-18",
       "sha256": "95cba453a3c44ea0641334365603c083b8f54fd227f501c91b17fc3825509ac1",
+      "raw_source_sha256": "cb67e1910da3005a0160c0f2dcc3e8fdcc5de2a1fcc636ad2f6609199d73d62e",
       "raw_pdf_sha256": "cb67e1910da3005a0160c0f2dcc3e8fdcc5de2a1fcc636ad2f6609199d73d62e",
       "extraction_method": "pdftotext -layout -enc UTF-8 (Xpdf 4.06)",
-      "notes": "Official Cabinet Office PDF downloaded from the publication page and extracted without editorial additions. The raw PDF is not tracked; its SHA-256 is recorded for source verification."
+      "notes": "Publication metadata and an acquisition-record raw-source SHA-256 are recorded. The raw PDF and public licence checks are out-of-band and not reproducible in this workspace; only the checked-in extracted text is locally checksum-verified."
     }
   ]
 }

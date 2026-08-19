@@ -1,0 +1,387 @@
+{
+  "metadata": {
+    "generated_at_utc": "2026-08-19T00:07:15Z",
+    "timestamp_utc": "2026-08-19T00:07:15Z",
+    "corpus_manifest_sha256": "de302fe1a5704f89fc6ed31896c5b72e23f95f57480dd0f704221ccbf7abbcf9",
+    "corpus_manifest_hash": "de302fe1a5704f89fc6ed31896c5b72e23f95f57480dd0f704221ccbf7abbcf9",
+    "corpus_manifest_path": "data/corpus_manifest.json",
+    "code_revision": "3b1a278b070350b49d2e2936f1af61db0b7cd415",
+    "working_tree_dirty": true,
+    "config": {
+      "annotation_file": "evaluation/claim_annotations.json",
+      "fixture_file": "evaluation/evidence_contract_cases.json",
+      "schema_file": "evaluation/claim_annotations.schema.json",
+      "schema_validation": "jsonschema_draft_2020_12_and_manual_validator",
+      "fixture_binding": "immutable_content_and_sha256",
+      "retrieval_metrics_included": false,
+      "human_review_required": true
+    }
+  },
+  "scope": {
+    "name": "claim_level_evidence_contract",
+    "claim_metrics_require_reviewed_labels": true,
+    "retrieval_metrics": "reported separately; not copied into this report",
+    "generation_quality": "not measured"
+  },
+  "fixture_inventory": {
+    "status": "fixture_inventory_only; not reviewer labels or quality results",
+    "case_count": 6,
+    "by_case_type": {
+      "adversarial": 1,
+      "ambiguous": 1,
+      "answerable": 2,
+      "unanswerable": 2
+    },
+    "failure_modes": {
+      "unsupported_claim": "failure-mode fixture within its declared case_type",
+      "citation_error": "failure-mode fixture within its declared case_type"
+    }
+  },
+  "review_status": "pending_human_review",
+  "measured_metrics": {
+    "cases": 6,
+    "claims": 5,
+    "reviewed_label_count": 0,
+    "pending_label_count": 26,
+    "reviewed_evidence_reference_count": 0,
+    "pending_evidence_reference_count": 5,
+    "fully_reviewed_claims": 0,
+    "claim_review_completion_rate": 0.0,
+    "review_completion": {
+      "required_items": 31,
+      "reviewed_items": 0,
+      "pending_items": 31,
+      "rate": 0.0
+    },
+    "claim_support": {
+      "reviewed": 0,
+      "pending": 5,
+      "not_applicable": 0,
+      "label_counts": {},
+      "positive_count": 0,
+      "rate": null,
+      "supported_or_partially_supported_rate": null
+    },
+    "citation_completeness": {
+      "reviewed": 0,
+      "pending": 5,
+      "not_applicable": 0,
+      "label_counts": {},
+      "positive_count": 0,
+      "rate": null
+    },
+    "citation_precision": {
+      "reviewed": 0,
+      "pending": 5,
+      "not_applicable": 0,
+      "label_counts": {},
+      "positive_count": 0,
+      "rate": null
+    },
+    "abstention_correctness": {
+      "reviewed": 0,
+      "pending": 6,
+      "not_applicable": 0,
+      "label_counts": {},
+      "positive_count": 0,
+      "rate": null
+    },
+    "unsupported_claims": {
+      "reviewed": 0,
+      "pending": 5,
+      "not_applicable": 0,
+      "label_counts": {},
+      "positive_count": 0,
+      "rate": null
+    }
+  },
+  "reviewer_labels": {
+    "status": "reviewed_labels_only",
+    "count": 0,
+    "entries": []
+  },
+  "reviewed_evidence_references": {
+    "status": "reviewed_references_only",
+    "count": 0,
+    "entries": []
+  },
+  "pending_review": {
+    "status": "pending_human_review",
+    "case_ids": [
+      "heldout-contract-answerable-01",
+      "heldout-contract-unanswerable-01",
+      "heldout-contract-adversarial-01",
+      "heldout-contract-ambiguous-01",
+      "heldout-contract-unsupported-01",
+      "heldout-contract-citation-error-01"
+    ],
+    "claim_ids": [
+      "heldout-contract-adversarial-01-claim-1",
+      "heldout-contract-ambiguous-01-claim-1",
+      "heldout-contract-answerable-01-claim-1",
+      "heldout-contract-citation-error-01-claim-1",
+      "heldout-contract-unsupported-01-claim-1"
+    ],
+    "pending_fields": [
+      {
+        "case_id": "heldout-contract-answerable-01",
+        "claim_id": null,
+        "field": "abstention_correctness",
+        "status": "pending_human_review"
+      },
+      {
+        "case_id": "heldout-contract-answerable-01",
+        "claim_id": "heldout-contract-answerable-01-claim-1",
+        "field": "claim_support",
+        "status": "pending_human_review"
+      },
+      {
+        "case_id": "heldout-contract-answerable-01",
+        "claim_id": "heldout-contract-answerable-01-claim-1",
+        "field": "citation_completeness",
+        "status": "pending_human_review"
+      },
+      {
+        "case_id": "heldout-contract-answerable-01",
+        "claim_id": "heldout-contract-answerable-01-claim-1",
+        "field": "citation_precision",
+        "status": "pending_human_review"
+      },
+      {
+        "case_id": "heldout-contract-answerable-01",
+        "claim_id": "heldout-contract-answerable-01-claim-1",
+        "field": "unsupported_claim",
+        "status": "pending_human_review"
+      },
+      {
+        "case_id": "heldout-contract-answerable-01",
+        "claim_id": "heldout-contract-answerable-01-claim-1",
+        "field": "evidence_references",
+        "reference_index": 0,
+        "citation": "[model_risk_review_playbook.md#1]",
+        "status": "pending_human_review"
+      },
+      {
+        "case_id": "heldout-contract-unanswerable-01",
+        "claim_id": null,
+        "field": "abstention_correctness",
+        "status": "pending_human_review"
+      },
+      {
+        "case_id": "heldout-contract-adversarial-01",
+        "claim_id": null,
+        "field": "abstention_correctness",
+        "status": "pending_human_review"
+      },
+      {
+        "case_id": "heldout-contract-adversarial-01",
+        "claim_id": "heldout-contract-adversarial-01-claim-1",
+        "field": "claim_support",
+        "status": "pending_human_review"
+      },
+      {
+        "case_id": "heldout-contract-adversarial-01",
+        "claim_id": "heldout-contract-adversarial-01-claim-1",
+        "field": "citation_completeness",
+        "status": "pending_human_review"
+      },
+      {
+        "case_id": "heldout-contract-adversarial-01",
+        "claim_id": "heldout-contract-adversarial-01-claim-1",
+        "field": "citation_precision",
+        "status": "pending_human_review"
+      },
+      {
+        "case_id": "heldout-contract-adversarial-01",
+        "claim_id": "heldout-contract-adversarial-01-claim-1",
+        "field": "unsupported_claim",
+        "status": "pending_human_review"
+      },
+      {
+        "case_id": "heldout-contract-adversarial-01",
+        "claim_id": "heldout-contract-adversarial-01-claim-1",
+        "field": "evidence_references",
+        "reference_index": 0,
+        "citation": "[incident_response_guide.md#0]",
+        "status": "pending_human_review"
+      },
+      {
+        "case_id": "heldout-contract-ambiguous-01",
+        "claim_id": null,
+        "field": "abstention_correctness",
+        "status": "pending_human_review"
+      },
+      {
+        "case_id": "heldout-contract-ambiguous-01",
+        "claim_id": "heldout-contract-ambiguous-01-claim-1",
+        "field": "claim_support",
+        "status": "pending_human_review"
+      },
+      {
+        "case_id": "heldout-contract-ambiguous-01",
+        "claim_id": "heldout-contract-ambiguous-01-claim-1",
+        "field": "citation_completeness",
+        "status": "pending_human_review"
+      },
+      {
+        "case_id": "heldout-contract-ambiguous-01",
+        "claim_id": "heldout-contract-ambiguous-01-claim-1",
+        "field": "citation_precision",
+        "status": "pending_human_review"
+      },
+      {
+        "case_id": "heldout-contract-ambiguous-01",
+        "claim_id": "heldout-contract-ambiguous-01-claim-1",
+        "field": "unsupported_claim",
+        "status": "pending_human_review"
+      },
+      {
+        "case_id": "heldout-contract-ambiguous-01",
+        "claim_id": "heldout-contract-ambiguous-01-claim-1",
+        "field": "evidence_references",
+        "reference_index": 0,
+        "citation": "[model_risk_review_playbook.md#0]",
+        "status": "pending_human_review"
+      },
+      {
+        "case_id": "heldout-contract-unsupported-01",
+        "claim_id": null,
+        "field": "abstention_correctness",
+        "status": "pending_human_review"
+      },
+      {
+        "case_id": "heldout-contract-unsupported-01",
+        "claim_id": "heldout-contract-unsupported-01-claim-1",
+        "field": "claim_support",
+        "status": "pending_human_review"
+      },
+      {
+        "case_id": "heldout-contract-unsupported-01",
+        "claim_id": "heldout-contract-unsupported-01-claim-1",
+        "field": "citation_completeness",
+        "status": "pending_human_review"
+      },
+      {
+        "case_id": "heldout-contract-unsupported-01",
+        "claim_id": "heldout-contract-unsupported-01-claim-1",
+        "field": "citation_precision",
+        "status": "pending_human_review"
+      },
+      {
+        "case_id": "heldout-contract-unsupported-01",
+        "claim_id": "heldout-contract-unsupported-01-claim-1",
+        "field": "unsupported_claim",
+        "status": "pending_human_review"
+      },
+      {
+        "case_id": "heldout-contract-unsupported-01",
+        "claim_id": "heldout-contract-unsupported-01-claim-1",
+        "field": "evidence_references",
+        "reference_index": 0,
+        "citation": "[model_risk_review_playbook.md#1]",
+        "status": "pending_human_review"
+      },
+      {
+        "case_id": "heldout-contract-citation-error-01",
+        "claim_id": null,
+        "field": "abstention_correctness",
+        "status": "pending_human_review"
+      },
+      {
+        "case_id": "heldout-contract-citation-error-01",
+        "claim_id": "heldout-contract-citation-error-01-claim-1",
+        "field": "claim_support",
+        "status": "pending_human_review"
+      },
+      {
+        "case_id": "heldout-contract-citation-error-01",
+        "claim_id": "heldout-contract-citation-error-01-claim-1",
+        "field": "citation_completeness",
+        "status": "pending_human_review"
+      },
+      {
+        "case_id": "heldout-contract-citation-error-01",
+        "claim_id": "heldout-contract-citation-error-01-claim-1",
+        "field": "citation_precision",
+        "status": "pending_human_review"
+      },
+      {
+        "case_id": "heldout-contract-citation-error-01",
+        "claim_id": "heldout-contract-citation-error-01-claim-1",
+        "field": "unsupported_claim",
+        "status": "pending_human_review"
+      },
+      {
+        "case_id": "heldout-contract-citation-error-01",
+        "claim_id": "heldout-contract-citation-error-01-claim-1",
+        "field": "evidence_references",
+        "reference_index": 0,
+        "citation": "[not-retrieved.md#9]",
+        "status": "pending_human_review"
+      }
+    ],
+    "counts": {
+      "cases": 6,
+      "claims": 5,
+      "label_fields": 26,
+      "evidence_references": 5,
+      "review_items": 31
+    }
+  },
+  "rows": [
+    {
+      "case_id": "heldout-contract-answerable-01",
+      "split": "held_out",
+      "case_type": "answerable",
+      "claim_count": 1,
+      "pending_evidence_references": 1,
+      "review_status": "pending_human_review",
+      "reviewer_id": null
+    },
+    {
+      "case_id": "heldout-contract-unanswerable-01",
+      "split": "held_out",
+      "case_type": "unanswerable",
+      "claim_count": 0,
+      "pending_evidence_references": 0,
+      "review_status": "pending_human_review",
+      "reviewer_id": null
+    },
+    {
+      "case_id": "heldout-contract-adversarial-01",
+      "split": "held_out",
+      "case_type": "adversarial",
+      "claim_count": 1,
+      "pending_evidence_references": 1,
+      "review_status": "pending_human_review",
+      "reviewer_id": null
+    },
+    {
+      "case_id": "heldout-contract-ambiguous-01",
+      "split": "held_out",
+      "case_type": "ambiguous",
+      "claim_count": 1,
+      "pending_evidence_references": 1,
+      "review_status": "pending_human_review",
+      "reviewer_id": null
+    },
+    {
+      "case_id": "heldout-contract-unsupported-01",
+      "split": "held_out",
+      "case_type": "unanswerable",
+      "claim_count": 1,
+      "pending_evidence_references": 1,
+      "review_status": "pending_human_review",
+      "reviewer_id": null
+    },
+    {
+      "case_id": "heldout-contract-citation-error-01",
+      "split": "held_out",
+      "case_type": "answerable",
+      "claim_count": 1,
+      "pending_evidence_references": 1,
+      "review_status": "pending_human_review",
+      "reviewer_id": null
+    }
+  ]
+}

@@ -1,4 +1,29 @@
 {
+  "metadata": {
+    "generated_at_utc": "2026-08-19T00:07:14Z",
+    "timestamp_utc": "2026-08-19T00:07:14Z",
+    "corpus_manifest_sha256": "de302fe1a5704f89fc6ed31896c5b72e23f95f57480dd0f704221ccbf7abbcf9",
+    "corpus_manifest_hash": "de302fe1a5704f89fc6ed31896c5b72e23f95f57480dd0f704221ccbf7abbcf9",
+    "corpus_manifest_path": "data/corpus_manifest.json",
+    "code_revision": "3b1a278b070350b49d2e2936f1af61db0b7cd415",
+    "working_tree_dirty": true,
+    "config": {
+      "evaluation_file": "evaluation/generation_cases.json",
+      "retrieval_question": "What belongs in an approval record?",
+      "top_k": 3
+    }
+  },
+  "scope": {
+    "name": "structural_generation_gate",
+    "claim_metrics": "not measured; pending human annotation",
+    "retrieval_metrics": "not measured by this script"
+  },
+  "measured_metrics": {
+    "cases": 5,
+    "passed": 5,
+    "case_pass_rate": 1.0,
+    "scope": "structural provider-output validation only; no model was called"
+  },
   "metrics": {
     "cases": 5,
     "passed": 5,
