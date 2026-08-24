@@ -1,7 +1,8 @@
 # Offline baseline run
 
-Run date: 2026-08-18. Configuration: local TF-IDF baseline, deterministic word-window
-chunking, top-k = 3, with locally checksum-verified extracted text. The corpus contains three
+Report set generated on 2026-08-24 UTC (see each JSON artifact for its exact timestamp).
+Configuration: local TF-IDF baseline, deterministic word-window chunking, top-k = 3, with locally
+checksum-verified extracted text. The corpus contains three
 repository-authored demo teaching artifacts and one separately classified UK Cabinet Office PPN
 017 text snapshot. The PPN source record, OGL v3.0 metadata, extracted-text SHA-256, and recorded
 raw-source SHA-256 are in [`../data/corpus_manifest.json`](../data/corpus_manifest.json) and
@@ -59,9 +60,9 @@ prompt-injection-resistance result.
 
 The versioned claim annotation set is intentionally **pending human review**. It contains six
 held-out fixtures across four case types (answerable, unanswerable, adversarial, and ambiguous).
-Unsupported-claim and citation-error examples are failure modes within those types. There are five
-candidate claims, 26 unresolved label fields, and five unresolved evidence-reference statuses. No
-claim support, citation completeness/precision, unsupported-claim, or abstention result is reported;
+Unsupported-claim and citation-error examples are failure modes within those types. There are 31
+unresolved review items: 26 claim-label fields and five evidence-reference reviews. No claim
+support, citation completeness/precision, unsupported-claim, or abstention result is reported;
 the claim report emits `null` rates until an approved reviewer supplies labels and identity.
 Pending evidence references also keep claim review incomplete. Raw-source and public-licence
 verification remain out-of-band and are not reproducible in this workspace.
@@ -69,9 +70,10 @@ See [`../docs/annotation_protocol.md`](../docs/annotation_protocol.md) and
 [`claim_evaluation.json`](claim_evaluation.json). The claim report is scoped to the same
 manifest metadata but does not copy retrieval or Project 4 results.
 
-The generated JSON reports record the corpus manifest SHA-256, available git revision, timestamp,
-and configuration. The working tree was dirty when these local artifacts were generated, so the
-revision is context rather than a claim that an immutable release was evaluated.
+The generated JSON reports record the corpus manifest SHA-256, current git revision, generation
+timestamp, configuration, and working-tree status. Regenerated reports currently record
+`working_tree_dirty: true` because the tracked report artifacts are changed in this checkout; the
+revision is context, not a claim that an immutable release was evaluated.
 
 Regenerate the artifacts with:
 
