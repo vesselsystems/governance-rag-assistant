@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generated_at_utc": "2026-08-24T19:30:45Z",
-    "timestamp_utc": "2026-08-24T19:30:45Z",
+    "generated_at_utc": "2026-08-25T20:29:07Z",
+    "timestamp_utc": "2026-08-25T20:29:07Z",
     "corpus_manifest_sha256": "de302fe1a5704f89fc6ed31896c5b72e23f95f57480dd0f704221ccbf7abbcf9",
     "corpus_manifest_hash": "de302fe1a5704f89fc6ed31896c5b72e23f95f57480dd0f704221ccbf7abbcf9",
     "corpus_manifest_path": "data/corpus_manifest.json",
-    "code_revision": "29262a7046a8e729d52655f500924454da5cdc88",
+    "code_revision": "e269edad148ca1b226c6ff52292264628ada0550",
     "working_tree_dirty": true,
     "config": {
       "evaluation_file": "evaluation/generation_cases.json",
