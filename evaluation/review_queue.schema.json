@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/governance-rag/review-queue-v1.schema.json",
+  "title": "Governance RAG human review queue",
+  "description": "A tracked queue of unresolved human decisions. Pending items contain no outcome.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "annotation_file", "corpus_manifest", "manifest_document_sha256", "review_status", "items", "summary"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "annotation_file": {"const": "evaluation/claim_annotations.json"},
+    "corpus_manifest": {"const": "data/corpus_manifest.json"},
+    "manifest_document_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{64}$",
+      "description": "SHA-256 of canonical JSON for the bound PPN 017 manifest document record."
+    },
+    "review_status": {"enum": ["pending", "complete"]},
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/item"}
+    },
+    "summary": {"$ref": "#/$defs/summary"},
+    "notes": {"type": ["string", "null"]}
+  },
+  "$defs": {
+    "non_blank": {"type": "string", "pattern": "\\S"},
+    "nullable_non_blank": {"type": ["string", "null"], "pattern": "\\S"},
+    "evidence_ref": {"$ref": "#/$defs/non_blank"},
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "item_id", "item_type", "case_id", "claim_id", "field", "question",
+        "evidence_refs", "decision", "reviewer", "reviewed_at_utc", "rationale", "status"
+      ],
+      "properties": {
+        "item_id": {"$ref": "#/$defs/non_blank"},
+        "item_type": {"enum": ["claim_label", "evidence_reference", "external_source_license"]},
+        "case_id": {"type": ["string", "null"], "pattern": "\\S"},
+        "claim_id": {"type": ["string", "null"], "pattern": "\\S"},
+        "field": {"$ref": "#/$defs/non_blank"},
+        "question": {"$ref": "#/$defs/non_blank"},
+        "evidence_refs": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/evidence_ref"}
+        },
+        "decision": {"type": ["string", "null"], "pattern": "\\S"},
+        "reviewer": {"$ref": "#/$defs/nullable_non_blank"},
+        "reviewed_at_utc": {
+          "type": ["string", "null"],
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$"
+        },
+        "rationale": {"type": ["string", "null"], "pattern": "\\S"},
+        "status": {"enum": ["pending", "approved", "rejected"]}
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status", "total_items", "claim_label_decisions",
+        "evidence_reference_decisions", "external_source_license_reviews", "pending_items"
+      ],
+      "properties": {
+        "status": {"enum": ["pending", "complete"]},
+        "total_items": {"type": "integer", "minimum": 0},
+        "claim_label_decisions": {"type": "integer", "minimum": 0},
+        "evidence_reference_decisions": {"type": "integer", "minimum": 0},
+        "external_source_license_reviews": {"type": "integer", "minimum": 0},
+        "pending_items": {"type": "integer", "minimum": 0}
+      }
+    }
+  }
+}

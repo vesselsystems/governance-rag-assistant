@@ -60,12 +60,13 @@ prompt-injection-resistance result.
 
 The versioned claim annotation set is intentionally **pending human review**. It contains six
 held-out fixtures across four case types (answerable, unanswerable, adversarial, and ambiguous).
-Unsupported-claim and citation-error examples are failure modes within those types. There are 31
-unresolved review items: 26 claim-label fields and five evidence-reference reviews. No claim
-support, citation completeness/precision, unsupported-claim, or abstention result is reported;
-the claim report emits `null` rates until an approved reviewer supplies labels and identity.
-Pending evidence references also keep claim review incomplete. Raw-source and public-licence
-verification remain out-of-band and are not reproducible in this workspace.
+Unsupported-claim and citation-error examples are failure modes within those types. The review
+queue has 32 total items: 31 claim-review items (26 claim-label fields and five evidence-reference
+reviews) and one separate external PPN source/licence item. No claim support,
+citation completeness/precision, unsupported-claim, or abstention result is reported; the claim
+report emits `null` rates until an approved reviewer supplies labels and identity. Pending evidence
+references also keep claim review incomplete. Raw-source and public-licence verification remain
+out-of-band and are not reproducible in this workspace.
 See [`../docs/annotation_protocol.md`](../docs/annotation_protocol.md) and
 [`claim_evaluation.json`](claim_evaluation.json). The claim report is scoped to the same
 manifest metadata but does not copy retrieval or Project 4 results.
@@ -81,6 +82,7 @@ Regenerate the artifacts with:
 python scripts/verify_corpus_manifest.py
 python scripts/evaluate_retrieval.py
 python scripts/validate_generation.py
+python scripts/validate_reviews.py
 python scripts/evaluate_claims.py
 python scripts/evaluate_adversarial.py
 ```

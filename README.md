@@ -42,6 +42,7 @@ python scripts/verify_corpus_manifest.py
 python scripts/evaluate_retrieval.py
 python scripts/validate_generation.py
 python scripts/evaluate_claims.py
+python scripts/validate_reviews.py
 python scripts/evaluate_adversarial.py
 streamlit run app.py
 ```
@@ -116,8 +117,26 @@ then emits a report with measured reviewer labels and pending-human-review items
 The checked-in annotation set is intentionally all pending; no claim or evidence reference is
 independently labeled. Immutable fixture content is bound by field comparison and canonical hash.
 See
-[`docs/annotation_protocol.md`](docs/annotation_protocol.md) and
+[`docs/annotation_protocol.md`](docs/annotation_protocol.md),
+[`docs/review_workflow.md`](docs/review_workflow.md), and
 [`docs/ingestion_update.md`](docs/ingestion_update.md).
+
+`python scripts/validate_reviews.py` validates the all-pending 32-item review queue: 31
+claim-review items (26 claim-label and 5 evidence-reference decisions) across the six held-out
+cases, plus one separate PPN source/licence item. It also pins the PPN item to the canonical
+metadata digest of its manifest document record. It creates no labels or outcomes.
+
+`python scripts/apply_review_queue.py` validates a terminal queue and performs a dry-run; it
+never changes the annotation file without an explicit write flag:
+
+```bash
+python scripts/apply_review_queue.py
+python scripts/apply_review_queue.py --write
+```
+
+**Warning:** run `python scripts/evaluate_claims.py` to regenerate the claim report only after a
+successful `--write` apply. Applying the queue does not regenerate reports, and the write command
+refuses pending queue items or an unreviewed external source/licence item.
 
 `python scripts/evaluate_adversarial.py` separately checks the synthetic fixtures, untrusted
 prompt delimiters, and rejection of representative unsafe output. It is a static/offline safety
@@ -154,7 +173,9 @@ and [`reports/first_run.md`](reports/first_run.md).
 │   ├── adversarial_questions.json
 │   ├── evidence_contract_cases.json
 │   ├── claim_annotations.schema.json
-│   └── claim_annotations.json       # pending human review; no gold claims
+│   ├── claim_annotations.json       # pending human review; no gold claims
+│   ├── review_queue.schema.json
+│   └── review_queue.json             # all-pending human-review queue
 ├── reports/
 ├── scripts/
 ├── src/governance_rag/
@@ -170,12 +191,12 @@ and [`reports/first_run.md`](reports/first_run.md).
 ## Next experiments
 
 1. Compare retrieval methods on the same labeled set and pre-register any abstention threshold.
-2. Have reviewers label claim support and citation completeness for generated answers.
+2. Have approved reviewers complete `evaluation/review_queue.json`, then apply its terminal
+   outcomes with `python scripts/apply_review_queue.py --write`, before treating claim metrics as
+   results.
 3. Expand adversarial fixtures and run model-backed tests in an approved isolated environment.
 4. Measure provider-specific quality, latency, and cost separately from retrieval metrics.
-5. Have approved reviewers complete the evidence-contract annotations before treating claim metrics
-   as results.
-6. Review the external PPN snapshot's source terms before any redistribution or consequential use.
+5. Review the external PPN snapshot's source terms before any redistribution or consequential use.
 
 Project 3's corpus/index and reports remain separate from Project 4; see
 [`docs/project_boundaries.md`](docs/project_boundaries.md). No larger corpus or Project 4 result
