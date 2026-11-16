@@ -2,210 +2,61 @@
 
 [![CI](https://github.com/vesselsystems/governance-rag-assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/vesselsystems/governance-rag-assistant/actions/workflows/ci.yml)
 
-A small, offline-first governance-document retrieval-augmented assistant. It indexes Markdown
-with deterministic TF-IDF retrieval, shows source chunks, and uses an optional OpenAI-compatible
-endpoint only when explicitly configured. The Streamlit app was smoke-tested locally; the approved
-Chrome DevTools browser tool was unavailable in this run, so no screenshot is claimed. There is no
-hosted deployment or deployment URL because no target platform or credentials were authorized; the
-deployment-ready state is the deterministic local app, manifest verification, and CI checks.
+A retrieval-first question-answering assistant over AI-governance documents, for procurement and compliance reviewers who need the source paragraph rather than a summary.
 
-This is an evaluation exercise, not evidence of broad RAG quality. The no-key path is
-provider-neutral: it uses the local index and returns an evidence-only draft. If an optional
-provider fails, returns malformed or unsafe data, or cites a chunk that was not retrieved, the
-app returns that evidence-only draft.
+## Why I built it
 
-## Corpus status and provenance
+Someone asks "can suppliers use AI to write their bids?" A fluent paragraph is no use to them unless they can check it against the policy text. I also wanted to find out where lexical retrieval breaks down, not just where it works.
 
-The indexed corpus deliberately keeps source types separate: three **repository-authored demo
-teaching artifacts** and one locally stored text snapshot whose metadata points to the UK Cabinet
-Office publication [PPN 017: Improving transparency of AI use in procurement](https://www.gov.uk/government/publications/ppn-017-improving-transparency-of-ai-use-in-procurement).
-The demo files are not an organization's policy or legal advice. The PPN source material has its
-own [Open Government Licence v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)
-terms; the code's MIT licence is not silently applied to it.
+## What it does
 
-[`data/corpus_manifest.json`](data/corpus_manifest.json) records source metadata, the PPN raw-source
-SHA-256 from the acquisition record, and per-file extracted-text SHA-256 checksums. The loader
-locally checksum-verifies every indexed text snapshot, attaches metadata to retrieved chunks, and
-never downloads manifest URLs. Raw-source and public-licence verification are explicitly
-out-of-band and not reproducible in this workspace. See [`data/documents/README.md`](data/documents/README.md)
-for the source record and replacement checklist.
+The first benchmark was saturated. On the original 15 hand-written questions both retrievers find the right chunk in the top 3 every time, because those questions reuse the documents' own wording. So I wrote a harder set before any results existed: 32 questions, 18 paraphrases that avoid the answer's key words, 2 lexical traps, 12 unanswerable.
 
-## Quick start
+| Retriever | Original hit@3 | Challenge hit@3 | Challenge hit@1 | Challenge MRR |
+|---|---:|---:|---:|---:|
+| TF-IDF (default) | 1.00 | 0.65 | 0.30 | 0.47 |
+| BM25 | 1.00 | 0.65 | 0.55 | 0.58 |
+
+Paraphrase questions drop top-3 retrieval from 100% to 65%, and every miss is a vocabulary mismatch — "apply" versus "applies", "phone" versus "Helpdesk". BM25 wins five paired questions and loses none (exact McNemar p = 0.06), which is suggestive but not settled. Score thresholds cannot separate unanswerable on-topic questions from answerable ones: median top-1 similarity is actually higher for unanswerable (0.18) than answerable (0.15).
+
+## How it works
+
+- The corpus is the UK Cabinet Office's PPN 017 plus three documents I wrote, 23 chunks total. A manifest records each file's SHA-256 and the loader refuses anything missing from it or changed.
+- Documents are split into 180-word windows with a 40-word overlap, each keeping a citation ID like `[ppn_017_…txt#3]`.
+- With no API key set, the answer is the retrieved passages themselves, so the default path cannot invent anything.
+- If an OpenAI-compatible endpoint is configured, the draft is accepted only when every citation in it belongs to the retrieved set. Anything else falls back to evidence-only. The gate fails closed.
+- Streamlit renders everything through `st.text` after stripping control and bidi characters, so document text cannot inject markup.
+
+<!-- TODO: add screenshot of the app answering a question in evidence-only mode with the citation visible -->
+
+## Run it
+
+Requires Python 3.11+.
 
 ```bash
-python -m venv .venv
-# Windows PowerShell
-.venv\\Scripts\\Activate.ps1
-python -m pip install --upgrade pip
-python -m pip install -e ".[dev]"
-python scripts/verify_corpus_manifest.py
-python scripts/evaluate_retrieval.py
-python scripts/validate_generation.py
-python scripts/evaluate_claims.py
-python scripts/validate_reviews.py
-python scripts/evaluate_adversarial.py
+python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\Activate.ps1
+pip install -e ".[dev]"
 streamlit run app.py
 ```
 
-Without credentials, the app remains local and displays retrieved evidence. An optional
-OpenAI-compatible endpoint can be configured as follows:
+To compare the retrievers yourself: `python scripts/compare_retrievers.py`.
 
-```powershell
-$env:OPENAI_API_KEY = "..."
-$env:OPENAI_MODEL = "your-model"
-streamlit run app.py
-```
+## Tests and CI
 
-`OPENAI_BASE_URL` is optional. Do not send sensitive documents to an endpoint without the
-necessary review and approval.
-
-## Architecture and safety boundary
-
-```text
-Demo Markdown + locally checksum-verified text snapshot + manifest
-        │
-        ▼
-clean + deterministic word chunks
-        │
-        ▼
-local TF-IDF baseline ──► top-k chunks + citation IDs
-        │                                │
-        └── offline evaluation            └── optional provider
-                                               │
-                          structural validation gate
-                                               │
-                         valid output or evidence-only fallback
-```
-
-Retrieved documents are untrusted data. The optional provider prompt uses explicit boundaries
-and says not to execute document instructions; prompt-injection resistance is **not** inferred
-from that prompt. Synthetic prompt-injection and document-poisoning fixtures are kept outside
-the normal corpus under `tests/fixtures/adversarial/`. Offline checks verify the boundary and
-that representative unsafe provider output is rejected, but they do not measure a model's
-adversarial robustness.
-
-The UI renders answers and retrieved documents with Streamlit `st.text`, not Markdown or HTML.
-Control and terminal-formatting characters are removed by `safe_plain_text` before display or
-provider quoting. This is a rendering safeguard, not a content trust decision.
-
-## Evaluation
-
-`evaluation/questions.json` is a small, hand-authored set with `dev`, `public`, and manually
-held-out splits. It includes questions labeled against the three demo files and the locally stored
-PPN text snapshot, plus explicitly unanswerable questions. The set is a repeatable regression
-check, not an independently collected benchmark. The separate
-`evaluation/evidence_contract_cases.json` covers four case types—answerable, unanswerable,
-adversarial, and ambiguous. Unsupported-claim and citation-error examples are failure-mode
-fixtures inside those four types, not additional categories, and do not change the retrieval
-denominator.
-
-Run `python scripts/evaluate_retrieval.py` to regenerate `reports/retrieval_results.json`. The
-report defines and separates:
-
-- source hit@3 and mean reciprocal rank;
-- source precision/recall@3 where source labels are present;
-- exact expected-citation hit, precision, and recall@3 where chunk labels are present;
-- `retrieval_no_evidence_rate`: the rate of explicitly unanswerable cases with no lexical
-  evidence; this is a retrieval observation, not an abstention-correctness judgment.
-
-`python scripts/validate_generation.py` separately exercises the provider-output gate with valid,
-missing-citation, wrong-citation, instruction-like, and malformed cases. It does not call a model
-and does not measure claim entailment, citation completeness, or generated-answer quality.
-
-`python scripts/evaluate_claims.py` validates the declared JSON Schema and the manual validator,
-then emits a report with measured reviewer labels and pending-human-review items kept distinct.
-The checked-in annotation set is intentionally all pending; no claim or evidence reference is
-independently labeled. Immutable fixture content is bound by field comparison and canonical hash.
-See
-[`docs/annotation_protocol.md`](docs/annotation_protocol.md),
-[`docs/review_workflow.md`](docs/review_workflow.md), and
-[`docs/ingestion_update.md`](docs/ingestion_update.md).
-
-`python scripts/validate_reviews.py` validates the all-pending 32-item review queue: 31
-claim-review items (26 claim-label and 5 evidence-reference decisions) across the six held-out
-cases, plus one separate PPN source/licence item. It also pins the PPN item to the canonical
-metadata digest of its manifest document record. It creates no labels or outcomes.
-
-`python scripts/apply_review_queue.py` validates a terminal queue and performs a dry-run; it
-never changes the annotation file without an explicit write flag:
+62 tests plus Ruff. CI also re-runs the evaluation and fails if the committed comparison report no longer matches the code.
 
 ```bash
-python scripts/apply_review_queue.py
-python scripts/apply_review_queue.py --write
+pytest
+ruff check .
+python scripts/compare_retrievers.py --check
 ```
 
-**Warning:** run `python scripts/evaluate_claims.py` to regenerate the claim report only after a
-successful `--write` apply. Applying the queue does not regenerate reports, and the write command
-refuses pending queue items or an unreviewed external source/licence item.
+## Limits and what's next
 
-`python scripts/evaluate_adversarial.py` separately checks the synthetic fixtures, untrusted
-prompt delimiters, and rejection of representative unsafe output. It is a static/offline safety
-check, not a score for prompt-injection resistance.
+Twenty-three chunks is a small corpus, and the challenge labels are drafted but not yet human-verified. No generated answer has been evaluated for faithfulness, latency, or cost. For on-topic questions the corpus cannot answer, the app shows related but non-answering passages instead of abstaining.
 
-All reports are descriptive results for this tiny fixed corpus and label set. They must not be
-read as production quality, safety, latency, or cost evidence. See [`docs/evaluation.md`](docs/evaluation.md)
-and [`reports/first_run.md`](reports/first_run.md).
-
-## Responsible-use limits
-
-- Treat the demo files as teaching material, and the PPN file as a source snapshot—not as
-  organizational policy, legal advice, or a decision authority.
-- No-key mode is the default and does not require a provider account.
-- Empty or zero-score retrieval returns an explicit no-evidence response.
-- Provider errors, malformed output, unsafe output, and ungrounded citation output fail closed to
-  evidence-only mode.
-- Identifier validation does not prove that a cited chunk supports every claim.
-- Human review is needed before using the pattern for consequential decisions.
-
-## Project structure
-
-```text
-.
-├── app.py
-├── data/
-│   ├── corpus_manifest.json           # checksums, source provenance, and licence metadata
-│   └── documents/                     # demo guidance plus the separately marked PPN snapshot
-├── docs/architecture.md
-├── docs/evaluation.md
-├── evaluation/
-│   ├── questions.json
-│   ├── generation_cases.json
-│   ├── adversarial_questions.json
-│   ├── evidence_contract_cases.json
-│   ├── claim_annotations.schema.json
-│   ├── claim_annotations.json       # pending human review; no gold claims
-│   ├── review_queue.schema.json
-│   └── review_queue.json             # all-pending human-review queue
-├── reports/
-├── scripts/
-├── src/governance_rag/
-│   ├── annotations.py                 # claim labels and pending-review accounting
-│   ├── corpus.py
-│   ├── evaluation.py                  # retrieval/adversarial metrics
-│   ├── generation.py
-│   ├── reporting.py                   # manifest/revision/timestamp metadata
-│   └── retrieval.py
-└── tests/
-```
-
-## Next experiments
-
-1. Compare retrieval methods on the same labeled set and pre-register any abstention threshold.
-2. Have approved reviewers complete `evaluation/review_queue.json`, then apply its terminal
-   outcomes with `python scripts/apply_review_queue.py --write`, before treating claim metrics as
-   results.
-3. Expand adversarial fixtures and run model-backed tests in an approved isolated environment.
-4. Measure provider-specific quality, latency, and cost separately from retrieval metrics.
-5. Review the external PPN snapshot's source terms before any redistribution or consequential use.
-
-Project 3's corpus/index and reports remain separate from Project 4; see
-[`docs/project_boundaries.md`](docs/project_boundaries.md). No larger corpus or Project 4 result
-is claimed here.
+Next: verify the labels and re-run the comparison, add an embedding or hybrid retriever, and replace threshold abstention with an answerability check that has to quote support.
 
 ## License
 
-The code and repository-authored documentation are released under the [MIT License](LICENSE)
-where applicable. The PPN text snapshot is external source material recorded under the source's
-[Open Government Licence v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/);
-MIT does not cover or replace those terms. See [`data/corpus_manifest.json`](data/corpus_manifest.json)
-and [`data/documents/README.md`](data/documents/README.md).
+MIT for the code and the documents I wrote. PPN 017 is a UK Cabinet Office publication recorded as Open Government Licence v3.0.
