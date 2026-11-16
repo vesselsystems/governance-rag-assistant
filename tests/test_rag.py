@@ -203,3 +203,23 @@ def test_no_evidence_never_calls_provider(monkeypatch) -> None:
 
     assert answer == NO_EVIDENCE
     assert mode == "evidence-only"
+
+
+def test_evidence_only_answer_quotes_whole_chunks_so_the_answer_is_visible() -> None:
+    # Regression: a 650-character cut hid the answering sentence ("not prohibited"
+    # sits at character 785 of PPN chunk 2) although retrieval counted a hit.
+    from pathlib import Path
+
+    from governance_rag.retrieval import TfidfRetriever
+
+    root = Path(__file__).resolve().parents[1]
+    retriever = TfidfRetriever.from_directory(root / "data" / "documents")
+    question = "Can suppliers use AI to write their bids?"
+    results = retriever.retrieve(question, top_k=3)
+
+    answer, mode = answer_question(question, results)
+
+    assert mode == "evidence-only"
+    assert "suppliers' use of AI is not prohibited" in answer
+    for result in results[:2]:
+        assert result.chunk.text in answer

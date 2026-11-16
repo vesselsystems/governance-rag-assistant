@@ -18,6 +18,7 @@ from urllib.request import Request, urlopen
 from .retrieval import RetrievedChunk
 
 NO_EVIDENCE = "I could not find supporting evidence in the indexed documents."
+EVIDENCE_MAX_CHARS = 4_000  # well above the largest real chunk (1,584 characters)
 
 # A citation is deliberately treated as an opaque identifier.  The allowed set is
 # built from the current retrieval results rather than from text supplied by a
@@ -86,11 +87,18 @@ def format_context(results: list[RetrievedChunk]) -> str:
 
 
 def evidence_only_draft(results: list[RetrievedChunk]) -> str:
-    """Return a deterministic answer composed only of quoted retrieved evidence."""
+    """Return a deterministic answer composed only of quoted retrieved evidence.
+
+    Chunks are quoted whole. An earlier 650-character cut hid the answering sentence
+    for most chunks (20 of 23 are longer; median 1,165 characters), so a retrieval
+    "hit" could still show the user no answer. Chunking already bounds a chunk to 180
+    words; ``EVIDENCE_MAX_CHARS`` only guards against pathological input.
+    """
     if not results:
         return NO_EVIDENCE
     bullets = [
-        f"- {safe_plain_text(result.chunk.text, max_chars=650).strip()} {result.chunk.citation}"
+        f"- {safe_plain_text(result.chunk.text, max_chars=EVIDENCE_MAX_CHARS).strip()} "
+        f"{result.chunk.citation}"
         for result in results[:2]
     ]
     return (

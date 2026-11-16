@@ -1,0 +1,1892 @@
+{
+  "protocol": {
+    "purpose": "Stress the lexical baseline where the original 15-question set cannot: paraphrases that share few words with the answering chunk, and on-topic questions the corpus does not answer.",
+    "written_before_results": true,
+    "labels": "expected_citations lists every chunk a careful reader would accept as directly supporting the answer. Chunks overlap by 40 words, so some answers legitimately appear in two adjacent chunks.",
+    "label_status_values": {
+      "ai_drafted_unverified": "Question and label drafted with AI assistance; not yet checked by a person.",
+      "human_verified": "A person read the cited chunk(s) and confirmed the label unchanged.",
+      "human_corrected": "A person changed the label; record what changed in label_note."
+    },
+    "design_values": {
+      "paraphrase": "Answerable; deliberately avoids the key words of the answering chunk.",
+      "lexical_trap": "Answerable; a salient query word also appears in unrelated chunks.",
+      "in_domain_unanswerable": "On-topic for the corpus, but no document answers it.",
+      "out_of_domain_unanswerable": "Unrelated to the corpus."
+    },
+    "retriever_settings": "Fixed before evaluation and not tuned on this set: TF-IDF exactly as shipped (unigram+bigram, English stop words); BM25 with k1=1.5, b=0.75 using the same token pattern and stop-word list.",
+    "top_k": 3,
+    "primary_metrics": "Chunk-level hit@1, hit@3 and MRR@3 on answerable questions; false-answer and false-abstention rates on the answer/abstain decision.",
+    "threshold_rule": "Using the dev split only, choose the abstention threshold from {0} and the observed dev top-1 scores that maximises balanced accuracy of the answer/abstain decision (mean of answer rate on answerable and abstain rate on unanswerable questions); break ties toward the lower threshold. Apply that threshold once to the test split. A question is answered when its top-1 score is positive and at least the threshold."
+  },
+  "inputs": {
+    "challenge_questions_sha256": "9552e814ed92ee627aacaf2af1a8f51c9a9b6e5b78734197820254184a797dbf",
+    "regression_questions_sha256": "83562dde080aa79946fbf3834d41106be6f70b4b8cdca4d37bf5bba79c4fe216",
+    "corpus_manifest_sha256": "de302fe1a5704f89fc6ed31896c5b72e23f95f57480dd0f704221ccbf7abbcf9",
+    "indexed_chunks": 23,
+    "challenge_questions": 32,
+    "challenge_label_status": {
+      "ai_drafted_unverified": 32
+    },
+    "regression_questions": 15
+  },
+  "paired_tests_post_hoc": {
+    "comparison": "first=tfidf, second=bm25, all answerable challenge questions",
+    "hit_at_1": {
+      "metric": "hit@1",
+      "paired_questions": 20,
+      "only_first_hits": 0,
+      "only_second_hits": 5,
+      "p_value_two_sided": 0.0625
+    },
+    "hit_at_3": {
+      "metric": "hit@3",
+      "paired_questions": 20,
+      "only_first_hits": 0,
+      "only_second_hits": 0,
+      "p_value_two_sided": 1.0
+    }
+  },
+  "retrievers": {
+    "tfidf": {
+      "settings": "TfidfVectorizer(stop_words='english', ngram_range=(1, 2)), cosine similarity",
+      "regression_set": {
+        "answerable_questions": 13,
+        "hit_at_1": 0.9231,
+        "hit_at_3": 1.0,
+        "mrr_at_3": 0.9615
+      },
+      "challenge_dev": {
+        "answerable_questions": 9,
+        "hit_at_1": 0.3333,
+        "hit_at_3": 0.3333,
+        "mrr_at_3": 0.3333
+      },
+      "challenge_test": {
+        "answerable_questions": 11,
+        "hit_at_1": 0.2727,
+        "hit_at_3": 0.9091,
+        "mrr_at_3": 0.5758
+      },
+      "challenge_all": {
+        "answerable_questions": 20,
+        "hit_at_1": 0.3,
+        "hit_at_3": 0.65,
+        "mrr_at_3": 0.4667
+      },
+      "challenge_by_design": {
+        "lexical_trap": {
+          "answerable_questions": 2,
+          "hit_at_1": 0.0,
+          "hit_at_3": 0.5,
+          "mrr_at_3": 0.25
+        },
+        "paraphrase": {
+          "answerable_questions": 18,
+          "hit_at_1": 0.3333,
+          "hit_at_3": 0.6667,
+          "mrr_at_3": 0.4907
+        }
+      },
+      "challenge_human_verified_only": "no human-verified labels yet",
+      "abstention": {
+        "selected_threshold_from_dev": 0.1254,
+        "dev": {
+          "threshold": 0.1254,
+          "answerable": 9,
+          "unanswerable": 6,
+          "false_abstentions": 1,
+          "false_answers": 1,
+          "answered_with_wrong_evidence": 6,
+          "false_abstention_rate": 0.1111,
+          "false_answer_rate": 0.1667,
+          "balanced_accuracy": 0.8611
+        },
+        "test": {
+          "threshold": 0.1254,
+          "answerable": 11,
+          "unanswerable": 6,
+          "false_abstentions": 2,
+          "false_answers": 4,
+          "answered_with_wrong_evidence": 1,
+          "false_abstention_rate": 0.1818,
+          "false_answer_rate": 0.6667,
+          "balanced_accuracy": 0.5757
+        },
+        "test_without_threshold": {
+          "threshold": 0.0,
+          "answerable": 11,
+          "unanswerable": 6,
+          "false_abstentions": 0,
+          "false_answers": 6,
+          "answered_with_wrong_evidence": 1,
+          "false_abstention_rate": 0.0,
+          "false_answer_rate": 1.0,
+          "balanced_accuracy": 0.5
+        },
+        "score_distribution_dev": {
+          "answerable": {
+            "min": 0.1167,
+            "median": 0.1601,
+            "max": 0.3453
+          },
+          "unanswerable": {
+            "min": 0.0,
+            "median": 0.0909,
+            "max": 0.2312
+          }
+        },
+        "score_distribution_test": {
+          "answerable": {
+            "min": 0.0998,
+            "median": 0.1501,
+            "max": 0.2316
+          },
+          "unanswerable": {
+            "min": 0.0775,
+            "median": 0.1751,
+            "max": 0.2313
+          }
+        }
+      },
+      "rows": [
+        {
+          "id": "ch-dev-01",
+          "split": "dev",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "Who does this guidance apply to?",
+          "expected_citations": [
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#0]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#1]",
+              "score": 0.1924
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#2]",
+              "score": 0.1251
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#11]",
+              "score": 0.0553
+            }
+          ],
+          "top1_score": 0.1924,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-dev-02",
+          "split": "dev",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "Are bidders banned from using generative tools when writing proposals?",
+          "expected_citations": [
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#2]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#11]",
+              "score": 0.1431
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#15]",
+              "score": 0.1223
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#6]",
+              "score": 0.0993
+            }
+          ],
+          "top1_score": 0.1431,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-dev-03",
+          "split": "dev",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "Why might buyers need to plan for more questions and submissions?",
+          "expected_citations": [
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#4]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#14]",
+              "score": 0.2687
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#15]",
+              "score": 0.1102
+            },
+            {
+              "citation": "[model_risk_review_playbook.md#1]",
+              "score": 0.1015
+            }
+          ],
+          "top1_score": 0.2687,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-dev-04",
+          "split": "dev",
+          "design": "lexical_trap",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "If a purchase raises defence or intelligence worries about supplier AI, who needs to be involved?",
+          "expected_citations": [
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#5]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#10]",
+              "score": 0.1601
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#12]",
+              "score": 0.1089
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#11]",
+              "score": 0.1086
+            }
+          ],
+          "top1_score": 0.1601,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-dev-05",
+          "split": "dev",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "Why can't text from a chatbot be trusted to be factually correct?",
+          "expected_citations": [
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#8]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#8]",
+              "score": 0.1167
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#9]",
+              "score": 0.0404
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#3]",
+              "score": 0.0246
+            }
+          ],
+          "top1_score": 0.1167,
+          "first_relevant_rank": 1
+        },
+        {
+          "id": "ch-dev-06",
+          "split": "dev",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "Who can I phone with questions about this note?",
+          "expected_citations": [
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#9]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#14]",
+              "score": 0.3453
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#15]",
+              "score": 0.1623
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#0]",
+              "score": 0.1028
+            }
+          ],
+          "top1_score": 0.3453,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-dev-07",
+          "split": "dev",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "Do suppliers' answers about AI use count toward their evaluation score?",
+          "expected_citations": [
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#14]",
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#15]",
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#16]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#3]",
+              "score": 0.1254
+            },
+            {
+              "citation": "[model_risk_review_playbook.md#0]",
+              "score": 0.1093
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#2]",
+              "score": 0.0865
+            }
+          ],
+          "top1_score": 0.1254,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-dev-08",
+          "split": "dev",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "What must a project write down about how long it holds onto its data?",
+          "expected_citations": [
+            "[ai_data_governance_policy.md#0]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[ai_data_governance_policy.md#0]",
+              "score": 0.2059
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#12]",
+              "score": 0.1318
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#13]",
+              "score": 0.0972
+            }
+          ],
+          "top1_score": 0.2059,
+          "first_relevant_rank": 1
+        },
+        {
+          "id": "ch-dev-09",
+          "split": "dev",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "Does a good accuracy number mean the model is ready to deploy?",
+          "expected_citations": [
+            "[model_risk_review_playbook.md#0]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[model_risk_review_playbook.md#0]",
+              "score": 0.1475
+            },
+            {
+              "citation": "[incident_response_guide.md#0]",
+              "score": 0.0775
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#8]",
+              "score": 0.062
+            }
+          ],
+          "top1_score": 0.1475,
+          "first_relevant_rank": 1
+        },
+        {
+          "id": "ch-dev-10",
+          "split": "dev",
+          "design": "in_domain_unanswerable",
+          "answerable": false,
+          "label_status": "ai_drafted_unverified",
+          "question": "What is the maximum fine for a data breach under this policy?",
+          "expected_citations": [],
+          "retrieved": [
+            {
+              "citation": "[ai_data_governance_policy.md#0]",
+              "score": 0.2312
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#0]",
+              "score": 0.0846
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#12]",
+              "score": 0.0715
+            }
+          ],
+          "top1_score": 0.2312,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-dev-11",
+          "split": "dev",
+          "design": "in_domain_unanswerable",
+          "answerable": false,
+          "label_status": "ai_drafted_unverified",
+          "question": "How often must models be retrained?",
+          "expected_citations": [],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#10]",
+              "score": 0.0896
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#11]",
+              "score": 0.0673
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#3]",
+              "score": 0.0505
+            }
+          ],
+          "top1_score": 0.0896,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-dev-12",
+          "split": "dev",
+          "design": "in_domain_unanswerable",
+          "answerable": false,
+          "label_status": "ai_drafted_unverified",
+          "question": "How long must video conference transcripts be retained?",
+          "expected_citations": [],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#6]",
+              "score": 0.0895
+            },
+            {
+              "citation": "[ai_data_governance_policy.md#0]",
+              "score": 0.0785
+            }
+          ],
+          "top1_score": 0.0895,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-dev-13",
+          "split": "dev",
+          "design": "in_domain_unanswerable",
+          "answerable": false,
+          "label_status": "ai_drafted_unverified",
+          "question": "Which AI vendors are on the government's approved supplier list?",
+          "expected_citations": [],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#11]",
+              "score": 0.1249
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#7]",
+              "score": 0.1198
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#13]",
+              "score": 0.1044
+            }
+          ],
+          "top1_score": 0.1249,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-dev-14",
+          "split": "dev",
+          "design": "in_domain_unanswerable",
+          "answerable": false,
+          "label_status": "ai_drafted_unverified",
+          "question": "What is the minimum contract value above which AI disclosure becomes mandatory?",
+          "expected_citations": [],
+          "retrieved": [
+            {
+              "citation": "[ai_data_governance_policy.md#0]",
+              "score": 0.0921
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#13]",
+              "score": 0.0826
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#5]",
+              "score": 0.0715
+            }
+          ],
+          "top1_score": 0.0921,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-dev-15",
+          "split": "dev",
+          "design": "out_of_domain_unanswerable",
+          "answerable": false,
+          "label_status": "ai_drafted_unverified",
+          "question": "What is the boiling point of water at sea level?",
+          "expected_citations": [],
+          "retrieved": [],
+          "top1_score": 0.0,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-test-01",
+          "split": "test",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "From what date do the updated rules take effect?",
+          "expected_citations": [
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#2]",
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#1]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#0]",
+              "score": 0.0998
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#1]",
+              "score": 0.0964
+            },
+            {
+              "citation": "[model_risk_review_playbook.md#1]",
+              "score": 0.0706
+            }
+          ],
+          "top1_score": 0.0998,
+          "first_relevant_rank": 2
+        },
+        {
+          "id": "ch-test-02",
+          "split": "test",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "Can a vendor feed our non-public tender papers into a model to train it?",
+          "expected_citations": [
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#3]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[model_risk_review_playbook.md#0]",
+              "score": 0.1388
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#3]",
+              "score": 0.1279
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#14]",
+              "score": 0.0924
+            }
+          ],
+          "top1_score": 0.1388,
+          "first_relevant_rank": 2
+        },
+        {
+          "id": "ch-test-03",
+          "split": "test",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "What checks can a buyer use to confirm a supplier can actually deliver if the bid was AI-written?",
+          "expected_citations": [
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#3]",
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#4]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#16]",
+              "score": 0.1363
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#2]",
+              "score": 0.1061
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#15]",
+              "score": 0.0924
+            }
+          ],
+          "top1_score": 0.1363,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-test-04",
+          "split": "test",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "What should buyers do when a service that isn't marketed as AI will still rely on machine learning?",
+          "expected_citations": [
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#5]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#16]",
+              "score": 0.2316
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#10]",
+              "score": 0.1529
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#5]",
+              "score": 0.148
+            }
+          ],
+          "top1_score": 0.2316,
+          "first_relevant_rank": 3
+        },
+        {
+          "id": "ch-test-05",
+          "split": "test",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "If a meeting tool automatically writes up minutes using AI, what should the contract say about that data?",
+          "expected_citations": [
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#6]",
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#7]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#10]",
+              "score": 0.1724
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#6]",
+              "score": 0.1396
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#2]",
+              "score": 0.0886
+            }
+          ],
+          "top1_score": 0.1724,
+          "first_relevant_rank": 2
+        },
+        {
+          "id": "ch-test-06",
+          "split": "test",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "Should officials let an AI system make the final call on decisions?",
+          "expected_citations": [
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#8]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#7]",
+              "score": 0.1501
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#8]",
+              "score": 0.1008
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#10]",
+              "score": 0.0738
+            }
+          ],
+          "top1_score": 0.1501,
+          "first_relevant_rank": 2
+        },
+        {
+          "id": "ch-test-07",
+          "split": "test",
+          "design": "lexical_trap",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "What four values does the Turing Institute guidance name?",
+          "expected_citations": [
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#13]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#12]",
+              "score": 0.117
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#13]",
+              "score": 0.1106
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#2]",
+              "score": 0.0499
+            }
+          ],
+          "top1_score": 0.117,
+          "first_relevant_rank": 2
+        },
+        {
+          "id": "ch-test-08",
+          "split": "test",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "Can buyers treat vendors differently based on how they answer the AI questions?",
+          "expected_citations": [
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#15]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#14]",
+              "score": 0.216
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#15]",
+              "score": 0.1041
+            },
+            {
+              "citation": "[incident_response_guide.md#0]",
+              "score": 0.0825
+            }
+          ],
+          "top1_score": 0.216,
+          "first_relevant_rank": 2
+        },
+        {
+          "id": "ch-test-09",
+          "split": "test",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "How is content-creating AI different from earlier kinds of AI?",
+          "expected_citations": [
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#7]",
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#10]",
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#11]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#10]",
+              "score": 0.2026
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#11]",
+              "score": 0.1617
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#7]",
+              "score": 0.1474
+            }
+          ],
+          "top1_score": 0.2026,
+          "first_relevant_rank": 1
+        },
+        {
+          "id": "ch-test-10",
+          "split": "test",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "What should happen once an incident is resolved?",
+          "expected_citations": [
+            "[incident_response_guide.md#0]",
+            "[incident_response_guide.md#1]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[incident_response_guide.md#0]",
+              "score": 0.1281
+            }
+          ],
+          "top1_score": 0.1281,
+          "first_relevant_rank": 1
+        },
+        {
+          "id": "ch-test-11",
+          "split": "test",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "What should be written down about overruling a model's output?",
+          "expected_citations": [
+            "[model_risk_review_playbook.md#0]",
+            "[model_risk_review_playbook.md#1]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[model_risk_review_playbook.md#0]",
+              "score": 0.188
+            },
+            {
+              "citation": "[incident_response_guide.md#0]",
+              "score": 0.0937
+            },
+            {
+              "citation": "[model_risk_review_playbook.md#1]",
+              "score": 0.073
+            }
+          ],
+          "top1_score": 0.188,
+          "first_relevant_rank": 1
+        },
+        {
+          "id": "ch-test-12",
+          "split": "test",
+          "design": "in_domain_unanswerable",
+          "answerable": false,
+          "label_status": "ai_drafted_unverified",
+          "question": "Which named official must sign off on using AI in a tender?",
+          "expected_citations": [],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#10]",
+              "score": 0.208
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#3]",
+              "score": 0.164
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#14]",
+              "score": 0.1527
+            }
+          ],
+          "top1_score": 0.208,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-test-13",
+          "split": "test",
+          "design": "in_domain_unanswerable",
+          "answerable": false,
+          "label_status": "ai_drafted_unverified",
+          "question": "What is the deadline for reporting an AI incident to the regulator?",
+          "expected_citations": [],
+          "retrieved": [
+            {
+              "citation": "[incident_response_guide.md#0]",
+              "score": 0.1422
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#10]",
+              "score": 0.0609
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#7]",
+              "score": 0.0544
+            }
+          ],
+          "top1_score": 0.1422,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-test-14",
+          "split": "test",
+          "design": "in_domain_unanswerable",
+          "answerable": false,
+          "label_status": "ai_drafted_unverified",
+          "question": "What encryption standard must suppliers use for training data?",
+          "expected_citations": [],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#3]",
+              "score": 0.2298
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#4]",
+              "score": 0.0919
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#2]",
+              "score": 0.0826
+            }
+          ],
+          "top1_score": 0.2298,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-test-15",
+          "split": "test",
+          "design": "in_domain_unanswerable",
+          "answerable": false,
+          "label_status": "ai_drafted_unverified",
+          "question": "What budget is allocated for AI training courses for civil servants?",
+          "expected_citations": [],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#11]",
+              "score": 0.2313
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#10]",
+              "score": 0.1277
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#13]",
+              "score": 0.0985
+            }
+          ],
+          "top1_score": 0.2313,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-test-16",
+          "split": "test",
+          "design": "in_domain_unanswerable",
+          "answerable": false,
+          "label_status": "ai_drafted_unverified",
+          "question": "Which large language model does the Cabinet Office recommend for drafting bids?",
+          "expected_citations": [],
+          "retrieved": [
+            {
+              "citation": "[model_risk_review_playbook.md#0]",
+              "score": 0.1066
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#9]",
+              "score": 0.0923
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#10]",
+              "score": 0.0833
+            }
+          ],
+          "top1_score": 0.1066,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-test-17",
+          "split": "test",
+          "design": "out_of_domain_unanswerable",
+          "answerable": false,
+          "label_status": "ai_drafted_unverified",
+          "question": "Who won the 2018 football World Cup?",
+          "expected_citations": [],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#9]",
+              "score": 0.0775
+            }
+          ],
+          "top1_score": 0.0775,
+          "first_relevant_rank": null
+        }
+      ]
+    },
+    "bm25": {
+      "settings": "Okapi BM25, k1=1.5, b=0.75, same tokenizer and stop words, unigrams",
+      "regression_set": {
+        "answerable_questions": 13,
+        "hit_at_1": 0.9231,
+        "hit_at_3": 1.0,
+        "mrr_at_3": 0.9615
+      },
+      "challenge_dev": {
+        "answerable_questions": 9,
+        "hit_at_1": 0.3333,
+        "hit_at_3": 0.3333,
+        "mrr_at_3": 0.3333
+      },
+      "challenge_test": {
+        "answerable_questions": 11,
+        "hit_at_1": 0.7273,
+        "hit_at_3": 0.9091,
+        "mrr_at_3": 0.7879
+      },
+      "challenge_all": {
+        "answerable_questions": 20,
+        "hit_at_1": 0.55,
+        "hit_at_3": 0.65,
+        "mrr_at_3": 0.5833
+      },
+      "challenge_by_design": {
+        "lexical_trap": {
+          "answerable_questions": 2,
+          "hit_at_1": 0.5,
+          "hit_at_3": 0.5,
+          "mrr_at_3": 0.5
+        },
+        "paraphrase": {
+          "answerable_questions": 18,
+          "hit_at_1": 0.5556,
+          "hit_at_3": 0.6667,
+          "mrr_at_3": 0.5926
+        }
+      },
+      "challenge_human_verified_only": "no human-verified labels yet",
+      "abstention": {
+        "selected_threshold_from_dev": 4.5002,
+        "dev": {
+          "threshold": 4.5002,
+          "answerable": 9,
+          "unanswerable": 6,
+          "false_abstentions": 1,
+          "false_answers": 1,
+          "answered_with_wrong_evidence": 5,
+          "false_abstention_rate": 0.1111,
+          "false_answer_rate": 0.1667,
+          "balanced_accuracy": 0.8611
+        },
+        "test": {
+          "threshold": 4.5002,
+          "answerable": 11,
+          "unanswerable": 6,
+          "false_abstentions": 3,
+          "false_answers": 3,
+          "answered_with_wrong_evidence": 1,
+          "false_abstention_rate": 0.2727,
+          "false_answer_rate": 0.5,
+          "balanced_accuracy": 0.6137
+        },
+        "test_without_threshold": {
+          "threshold": 0.0,
+          "answerable": 11,
+          "unanswerable": 6,
+          "false_abstentions": 0,
+          "false_answers": 6,
+          "answered_with_wrong_evidence": 1,
+          "false_abstention_rate": 0.0,
+          "false_answer_rate": 1.0,
+          "balanced_accuracy": 0.5
+        },
+        "score_distribution_dev": {
+          "answerable": {
+            "min": 3.5235,
+            "median": 5.746,
+            "max": 6.8513
+          },
+          "unanswerable": {
+            "min": 0.0,
+            "median": 3.5245,
+            "max": 5.3241
+          }
+        },
+        "score_distribution_test": {
+          "answerable": {
+            "min": 3.6923,
+            "median": 5.1675,
+            "max": 7.832
+          },
+          "unanswerable": {
+            "min": 2.7351,
+            "median": 4.2809,
+            "max": 6.1311
+          }
+        }
+      },
+      "rows": [
+        {
+          "id": "ch-dev-01",
+          "split": "dev",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "Who does this guidance apply to?",
+          "expected_citations": [
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#0]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#1]",
+              "score": 6.8513
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#2]",
+              "score": 5.3089
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#8]",
+              "score": 2.7508
+            }
+          ],
+          "top1_score": 6.8513,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-dev-02",
+          "split": "dev",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "Are bidders banned from using generative tools when writing proposals?",
+          "expected_citations": [
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#2]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#15]",
+              "score": 4.7893
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#7]",
+              "score": 4.4285
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#11]",
+              "score": 3.9165
+            }
+          ],
+          "top1_score": 4.7893,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-dev-03",
+          "split": "dev",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "Why might buyers need to plan for more questions and submissions?",
+          "expected_citations": [
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#4]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#14]",
+              "score": 3.5235
+            },
+            {
+              "citation": "[model_risk_review_playbook.md#1]",
+              "score": 3.3044
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#15]",
+              "score": 2.7478
+            }
+          ],
+          "top1_score": 3.5235,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-dev-04",
+          "split": "dev",
+          "design": "lexical_trap",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "If a purchase raises defence or intelligence worries about supplier AI, who needs to be involved?",
+          "expected_citations": [
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#5]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#10]",
+              "score": 4.5002
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#15]",
+              "score": 2.7084
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#12]",
+              "score": 2.1638
+            }
+          ],
+          "top1_score": 4.5002,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-dev-05",
+          "split": "dev",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "Why can't text from a chatbot be trusted to be factually correct?",
+          "expected_citations": [
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#8]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#8]",
+              "score": 6.6008
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#9]",
+              "score": 2.2312
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#3]",
+              "score": 1.4874
+            }
+          ],
+          "top1_score": 6.6008,
+          "first_relevant_rank": 1
+        },
+        {
+          "id": "ch-dev-06",
+          "split": "dev",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "Who can I phone with questions about this note?",
+          "expected_citations": [
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#9]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#14]",
+              "score": 5.1152
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#15]",
+              "score": 4.1815
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#0]",
+              "score": 2.4432
+            }
+          ],
+          "top1_score": 5.1152,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-dev-07",
+          "split": "dev",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "Do suppliers' answers about AI use count toward their evaluation score?",
+          "expected_citations": [
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#14]",
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#15]",
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#16]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[model_risk_review_playbook.md#0]",
+              "score": 6.0587
+            },
+            {
+              "citation": "[model_risk_review_playbook.md#1]",
+              "score": 3.6077
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#3]",
+              "score": 2.9413
+            }
+          ],
+          "top1_score": 6.0587,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-dev-08",
+          "split": "dev",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "What must a project write down about how long it holds onto its data?",
+          "expected_citations": [
+            "[ai_data_governance_policy.md#0]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[ai_data_governance_policy.md#0]",
+              "score": 6.5593
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#12]",
+              "score": 3.7
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#13]",
+              "score": 3.3672
+            }
+          ],
+          "top1_score": 6.5593,
+          "first_relevant_rank": 1
+        },
+        {
+          "id": "ch-dev-09",
+          "split": "dev",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "Does a good accuracy number mean the model is ready to deploy?",
+          "expected_citations": [
+            "[model_risk_review_playbook.md#0]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[model_risk_review_playbook.md#0]",
+              "score": 5.746
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#8]",
+              "score": 4.5102
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#2]",
+              "score": 4.128
+            }
+          ],
+          "top1_score": 5.746,
+          "first_relevant_rank": 1
+        },
+        {
+          "id": "ch-dev-10",
+          "split": "dev",
+          "design": "in_domain_unanswerable",
+          "answerable": false,
+          "label_status": "ai_drafted_unverified",
+          "question": "What is the maximum fine for a data breach under this policy?",
+          "expected_citations": [],
+          "retrieved": [
+            {
+              "citation": "[ai_data_governance_policy.md#0]",
+              "score": 3.5704
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#12]",
+              "score": 2.1277
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#0]",
+              "score": 2.0912
+            }
+          ],
+          "top1_score": 3.5704,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-dev-11",
+          "split": "dev",
+          "design": "in_domain_unanswerable",
+          "answerable": false,
+          "label_status": "ai_drafted_unverified",
+          "question": "How often must models be retrained?",
+          "expected_citations": [],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#10]",
+              "score": 1.7668
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#11]",
+              "score": 1.5743
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#3]",
+              "score": 1.3187
+            }
+          ],
+          "top1_score": 1.7668,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-dev-12",
+          "split": "dev",
+          "design": "in_domain_unanswerable",
+          "answerable": false,
+          "label_status": "ai_drafted_unverified",
+          "question": "How long must video conference transcripts be retained?",
+          "expected_citations": [],
+          "retrieved": [
+            {
+              "citation": "[ai_data_governance_policy.md#0]",
+              "score": 5.3241
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#6]",
+              "score": 3.9483
+            }
+          ],
+          "top1_score": 5.3241,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-dev-13",
+          "split": "dev",
+          "design": "in_domain_unanswerable",
+          "answerable": false,
+          "label_status": "ai_drafted_unverified",
+          "question": "Which AI vendors are on the government's approved supplier list?",
+          "expected_citations": [],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#6]",
+              "score": 3.4786
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#7]",
+              "score": 2.9033
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#3]",
+              "score": 2.8396
+            }
+          ],
+          "top1_score": 3.4786,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-dev-14",
+          "split": "dev",
+          "design": "in_domain_unanswerable",
+          "answerable": false,
+          "label_status": "ai_drafted_unverified",
+          "question": "What is the minimum contract value above which AI disclosure becomes mandatory?",
+          "expected_citations": [],
+          "retrieved": [
+            {
+              "citation": "[ai_data_governance_policy.md#0]",
+              "score": 4.185
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#5]",
+              "score": 3.1942
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#4]",
+              "score": 2.4511
+            }
+          ],
+          "top1_score": 4.185,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-dev-15",
+          "split": "dev",
+          "design": "out_of_domain_unanswerable",
+          "answerable": false,
+          "label_status": "ai_drafted_unverified",
+          "question": "What is the boiling point of water at sea level?",
+          "expected_citations": [],
+          "retrieved": [],
+          "top1_score": 0.0,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-test-01",
+          "split": "test",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "From what date do the updated rules take effect?",
+          "expected_citations": [
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#2]",
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#1]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#1]",
+              "score": 4.5815
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#0]",
+              "score": 3.2103
+            },
+            {
+              "citation": "[model_risk_review_playbook.md#1]",
+              "score": 2.4456
+            }
+          ],
+          "top1_score": 4.5815,
+          "first_relevant_rank": 1
+        },
+        {
+          "id": "ch-test-02",
+          "split": "test",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "Can a vendor feed our non-public tender papers into a model to train it?",
+          "expected_citations": [
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#3]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#3]",
+              "score": 6.12
+            },
+            {
+              "citation": "[model_risk_review_playbook.md#0]",
+              "score": 4.2073
+            },
+            {
+              "citation": "[incident_response_guide.md#0]",
+              "score": 3.5678
+            }
+          ],
+          "top1_score": 6.12,
+          "first_relevant_rank": 1
+        },
+        {
+          "id": "ch-test-03",
+          "split": "test",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "What checks can a buyer use to confirm a supplier can actually deliver if the bid was AI-written?",
+          "expected_citations": [
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#3]",
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#4]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#16]",
+              "score": 7.832
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#15]",
+              "score": 5.6433
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#2]",
+              "score": 4.4995
+            }
+          ],
+          "top1_score": 7.832,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-test-04",
+          "split": "test",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "What should buyers do when a service that isn't marketed as AI will still rely on machine learning?",
+          "expected_citations": [
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#5]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#16]",
+              "score": 5.7156
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#15]",
+              "score": 4.3525
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#5]",
+              "score": 4.2419
+            }
+          ],
+          "top1_score": 5.7156,
+          "first_relevant_rank": 3
+        },
+        {
+          "id": "ch-test-05",
+          "split": "test",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "If a meeting tool automatically writes up minutes using AI, what should the contract say about that data?",
+          "expected_citations": [
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#6]",
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#7]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#6]",
+              "score": 6.1463
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#3]",
+              "score": 3.5328
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#10]",
+              "score": 2.8855
+            }
+          ],
+          "top1_score": 6.1463,
+          "first_relevant_rank": 1
+        },
+        {
+          "id": "ch-test-06",
+          "split": "test",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "Should officials let an AI system make the final call on decisions?",
+          "expected_citations": [
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#8]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#8]",
+              "score": 4.2917
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#7]",
+              "score": 4.1681
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#6]",
+              "score": 2.0118
+            }
+          ],
+          "top1_score": 4.2917,
+          "first_relevant_rank": 1
+        },
+        {
+          "id": "ch-test-07",
+          "split": "test",
+          "design": "lexical_trap",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "What four values does the Turing Institute guidance name?",
+          "expected_citations": [
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#13]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#13]",
+              "score": 5.1675
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#12]",
+              "score": 5.1121
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#1]",
+              "score": 3.3797
+            }
+          ],
+          "top1_score": 5.1675,
+          "first_relevant_rank": 1
+        },
+        {
+          "id": "ch-test-08",
+          "split": "test",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "Can buyers treat vendors differently based on how they answer the AI questions?",
+          "expected_citations": [
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#15]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[incident_response_guide.md#0]",
+              "score": 4.8457
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#14]",
+              "score": 3.8845
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#15]",
+              "score": 3.1206
+            }
+          ],
+          "top1_score": 4.8457,
+          "first_relevant_rank": 3
+        },
+        {
+          "id": "ch-test-09",
+          "split": "test",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "How is content-creating AI different from earlier kinds of AI?",
+          "expected_citations": [
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#7]",
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#10]",
+            "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#11]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#10]",
+              "score": 3.7577
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#11]",
+              "score": 3.2732
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#16]",
+              "score": 1.7085
+            }
+          ],
+          "top1_score": 3.7577,
+          "first_relevant_rank": 1
+        },
+        {
+          "id": "ch-test-10",
+          "split": "test",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "What should happen once an incident is resolved?",
+          "expected_citations": [
+            "[incident_response_guide.md#0]",
+            "[incident_response_guide.md#1]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[incident_response_guide.md#0]",
+              "score": 3.6923
+            }
+          ],
+          "top1_score": 3.6923,
+          "first_relevant_rank": 1
+        },
+        {
+          "id": "ch-test-11",
+          "split": "test",
+          "design": "paraphrase",
+          "answerable": true,
+          "label_status": "ai_drafted_unverified",
+          "question": "What should be written down about overruling a model's output?",
+          "expected_citations": [
+            "[model_risk_review_playbook.md#0]",
+            "[model_risk_review_playbook.md#1]"
+          ],
+          "retrieved": [
+            {
+              "citation": "[model_risk_review_playbook.md#0]",
+              "score": 6.2863
+            },
+            {
+              "citation": "[incident_response_guide.md#0]",
+              "score": 3.5678
+            },
+            {
+              "citation": "[model_risk_review_playbook.md#1]",
+              "score": 3.3044
+            }
+          ],
+          "top1_score": 6.2863,
+          "first_relevant_rank": 1
+        },
+        {
+          "id": "ch-test-12",
+          "split": "test",
+          "design": "in_domain_unanswerable",
+          "answerable": false,
+          "label_status": "ai_drafted_unverified",
+          "question": "Which named official must sign off on using AI in a tender?",
+          "expected_citations": [],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#3]",
+              "score": 3.8498
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#15]",
+              "score": 3.7285
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#14]",
+              "score": 2.947
+            }
+          ],
+          "top1_score": 3.8498,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-test-13",
+          "split": "test",
+          "design": "in_domain_unanswerable",
+          "answerable": false,
+          "label_status": "ai_drafted_unverified",
+          "question": "What is the deadline for reporting an AI incident to the regulator?",
+          "expected_citations": [],
+          "retrieved": [
+            {
+              "citation": "[incident_response_guide.md#0]",
+              "score": 3.9688
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#10]",
+              "score": 0.4497
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#11]",
+              "score": 0.4403
+            }
+          ],
+          "top1_score": 3.9688,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-test-14",
+          "split": "test",
+          "design": "in_domain_unanswerable",
+          "answerable": false,
+          "label_status": "ai_drafted_unverified",
+          "question": "What encryption standard must suppliers use for training data?",
+          "expected_citations": [],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#3]",
+              "score": 4.593
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#13]",
+              "score": 4.0421
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#6]",
+              "score": 2.9174
+            }
+          ],
+          "top1_score": 4.593,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-test-15",
+          "split": "test",
+          "design": "in_domain_unanswerable",
+          "answerable": false,
+          "label_status": "ai_drafted_unverified",
+          "question": "What budget is allocated for AI training courses for civil servants?",
+          "expected_citations": [],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#11]",
+              "score": 6.1311
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#13]",
+              "score": 5.3894
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#10]",
+              "score": 3.9125
+            }
+          ],
+          "top1_score": 6.1311,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-test-16",
+          "split": "test",
+          "design": "in_domain_unanswerable",
+          "answerable": false,
+          "label_status": "ai_drafted_unverified",
+          "question": "Which large language model does the Cabinet Office recommend for drafting bids?",
+          "expected_citations": [],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#15]",
+              "score": 6.0053
+            },
+            {
+              "citation": "[model_risk_review_playbook.md#0]",
+              "score": 5.746
+            },
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#9]",
+              "score": 5.0
+            }
+          ],
+          "top1_score": 6.0053,
+          "first_relevant_rank": null
+        },
+        {
+          "id": "ch-test-17",
+          "split": "test",
+          "design": "out_of_domain_unanswerable",
+          "answerable": false,
+          "label_status": "ai_drafted_unverified",
+          "question": "Who won the 2018 football World Cup?",
+          "expected_citations": [],
+          "retrieved": [
+            {
+              "citation": "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#9]",
+              "score": 2.7351
+            }
+          ],
+          "top1_score": 2.7351,
+          "first_relevant_rank": null
+        }
+      ]
+    }
+  }
+}

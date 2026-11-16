@@ -1,0 +1,363 @@
+{
+  "schema_version": 1,
+  "name": "challenge-v1",
+  "protocol": {
+    "purpose": "Stress the lexical baseline where the original 15-question set cannot: paraphrases that share few words with the answering chunk, and on-topic questions the corpus does not answer.",
+    "written_before_results": true,
+    "labels": "expected_citations lists every chunk a careful reader would accept as directly supporting the answer. Chunks overlap by 40 words, so some answers legitimately appear in two adjacent chunks.",
+    "label_status_values": {
+      "ai_drafted_unverified": "Question and label drafted with AI assistance; not yet checked by a person.",
+      "human_verified": "A person read the cited chunk(s) and confirmed the label unchanged.",
+      "human_corrected": "A person changed the label; record what changed in label_note."
+    },
+    "design_values": {
+      "paraphrase": "Answerable; deliberately avoids the key words of the answering chunk.",
+      "lexical_trap": "Answerable; a salient query word also appears in unrelated chunks.",
+      "in_domain_unanswerable": "On-topic for the corpus, but no document answers it.",
+      "out_of_domain_unanswerable": "Unrelated to the corpus."
+    },
+    "retriever_settings": "Fixed before evaluation and not tuned on this set: TF-IDF exactly as shipped (unigram+bigram, English stop words); BM25 with k1=1.5, b=0.75 using the same token pattern and stop-word list.",
+    "top_k": 3,
+    "primary_metrics": "Chunk-level hit@1, hit@3 and MRR@3 on answerable questions; false-answer and false-abstention rates on the answer/abstain decision.",
+    "threshold_rule": "Using the dev split only, choose the abstention threshold from {0} and the observed dev top-1 scores that maximises balanced accuracy of the answer/abstain decision (mean of answer rate on answerable and abstain rate on unanswerable questions); break ties toward the lower threshold. Apply that threshold once to the test split. A question is answered when its top-1 score is positive and at least the threshold."
+  },
+  "questions": [
+    {
+      "id": "ch-dev-01",
+      "split": "dev",
+      "design": "paraphrase",
+      "question": "Who does this guidance apply to?",
+      "answerable": true,
+      "expected_citations": ["[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#0]"],
+      "rationale": "Chunk 0: the PPN applies to central government departments, their executive agencies and non-departmental public bodies.",
+      "label_status": "ai_drafted_unverified"
+    },
+    {
+      "id": "ch-dev-02",
+      "split": "dev",
+      "design": "paraphrase",
+      "question": "Are bidders banned from using generative tools when writing proposals?",
+      "answerable": true,
+      "expected_citations": ["[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#2]"],
+      "rationale": "Chunk 2: suppliers' use of AI is not prohibited during the commercial process.",
+      "label_status": "ai_drafted_unverified"
+    },
+    {
+      "id": "ch-dev-03",
+      "split": "dev",
+      "design": "paraphrase",
+      "question": "Why might buyers need to plan for more questions and submissions?",
+      "answerable": true,
+      "expected_citations": ["[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#4]"],
+      "rationale": "Chunk 4: suppliers may use AI to streamline bid writing, increasing clarification questions and tender responses.",
+      "label_status": "ai_drafted_unverified"
+    },
+    {
+      "id": "ch-dev-04",
+      "split": "dev",
+      "design": "lexical_trap",
+      "question": "If a purchase raises defence or intelligence worries about supplier AI, who needs to be involved?",
+      "answerable": true,
+      "expected_citations": ["[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#5]"],
+      "rationale": "Chunk 5: for national security concerns, engage Information Assurance and Security colleagues before launching. Trap: 'intelligence' also matches 'Artificial Intelligence' throughout Annex A.",
+      "label_status": "ai_drafted_unverified"
+    },
+    {
+      "id": "ch-dev-05",
+      "split": "dev",
+      "design": "paraphrase",
+      "question": "Why can't text from a chatbot be trusted to be factually correct?",
+      "answerable": true,
+      "expected_citations": ["[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#8]"],
+      "rationale": "Chunk 8: LLMs predict statistically plausible text, and plausibility does not mean factual accuracy.",
+      "label_status": "ai_drafted_unverified"
+    },
+    {
+      "id": "ch-dev-06",
+      "split": "dev",
+      "design": "paraphrase",
+      "question": "Who can I phone with questions about this note?",
+      "answerable": true,
+      "expected_citations": ["[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#9]"],
+      "rationale": "Chunk 9: enquiries go to the Crown Commercial Service Helpdesk on 0345 410 2222.",
+      "label_status": "ai_drafted_unverified"
+    },
+    {
+      "id": "ch-dev-07",
+      "split": "dev",
+      "design": "paraphrase",
+      "question": "Do suppliers' answers about AI use count toward their evaluation score?",
+      "answerable": true,
+      "expected_citations": [
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#14]",
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#15]",
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#16]"
+      ],
+      "rationale": "Chunk 14 states the annex questions should not be scored; chunks 15 and 16 label each example question 'For Information Only (Not Scored)'.",
+      "label_status": "ai_drafted_unverified"
+    },
+    {
+      "id": "ch-dev-08",
+      "split": "dev",
+      "design": "paraphrase",
+      "question": "What must a project write down about how long it holds onto its data?",
+      "answerable": true,
+      "expected_citations": ["[ai_data_governance_policy.md#0]"],
+      "rationale": "Chunk 0: every AI project should record how long its data will be retained.",
+      "label_status": "ai_drafted_unverified"
+    },
+    {
+      "id": "ch-dev-09",
+      "split": "dev",
+      "design": "paraphrase",
+      "question": "Does a good accuracy number mean the model is ready to deploy?",
+      "answerable": true,
+      "expected_citations": ["[model_risk_review_playbook.md#0]"],
+      "rationale": "Chunk 0: a high score does not establish that a model should be used.",
+      "label_status": "ai_drafted_unverified"
+    },
+    {
+      "id": "ch-dev-10",
+      "split": "dev",
+      "design": "in_domain_unanswerable",
+      "question": "What is the maximum fine for a data breach under this policy?",
+      "answerable": false,
+      "expected_citations": [],
+      "rationale": "No document sets fines or penalties.",
+      "label_status": "ai_drafted_unverified"
+    },
+    {
+      "id": "ch-dev-11",
+      "split": "dev",
+      "design": "in_domain_unanswerable",
+      "question": "How often must models be retrained?",
+      "answerable": false,
+      "expected_citations": [],
+      "rationale": "No document specifies a retraining cadence.",
+      "label_status": "ai_drafted_unverified"
+    },
+    {
+      "id": "ch-dev-12",
+      "split": "dev",
+      "design": "in_domain_unanswerable",
+      "question": "How long must video conference transcripts be retained?",
+      "answerable": false,
+      "expected_citations": [],
+      "rationale": "Chunk 6 discusses meeting transcripts and their use, but no retention period appears anywhere.",
+      "label_status": "ai_drafted_unverified"
+    },
+    {
+      "id": "ch-dev-13",
+      "split": "dev",
+      "design": "in_domain_unanswerable",
+      "question": "Which AI vendors are on the government's approved supplier list?",
+      "answerable": false,
+      "expected_citations": [],
+      "rationale": "The PPN names no approved vendors or supplier list.",
+      "label_status": "ai_drafted_unverified"
+    },
+    {
+      "id": "ch-dev-14",
+      "split": "dev",
+      "design": "in_domain_unanswerable",
+      "question": "What is the minimum contract value above which AI disclosure becomes mandatory?",
+      "answerable": false,
+      "expected_citations": [],
+      "rationale": "No value threshold appears; disclosure questions are described as optional examples.",
+      "label_status": "ai_drafted_unverified"
+    },
+    {
+      "id": "ch-dev-15",
+      "split": "dev",
+      "design": "out_of_domain_unanswerable",
+      "question": "What is the boiling point of water at sea level?",
+      "answerable": false,
+      "expected_citations": [],
+      "rationale": "Unrelated to the corpus.",
+      "label_status": "ai_drafted_unverified"
+    },
+    {
+      "id": "ch-test-01",
+      "split": "test",
+      "design": "paraphrase",
+      "question": "From what date do the updated rules take effect?",
+      "answerable": true,
+      "expected_citations": [
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#2]",
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#1]"
+      ],
+      "rationale": "Chunk 2 (Timing): note the provisions from 24 February 2025. Chunk 1: the updated legislation applies to procurements commenced on or after 24 February 2025.",
+      "label_status": "ai_drafted_unverified"
+    },
+    {
+      "id": "ch-test-02",
+      "split": "test",
+      "design": "paraphrase",
+      "question": "Can a vendor feed our non-public tender papers into a model to train it?",
+      "answerable": true,
+      "expected_citations": ["[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#3]"],
+      "rationale": "Chunk 3: controls should stop suppliers using confidential or non-public authority information as AI training data.",
+      "label_status": "ai_drafted_unverified"
+    },
+    {
+      "id": "ch-test-03",
+      "split": "test",
+      "design": "paraphrase",
+      "question": "What checks can a buyer use to confirm a supplier can actually deliver if the bid was AI-written?",
+      "answerable": true,
+      "expected_citations": [
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#3]",
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#4]"
+      ],
+      "rationale": "Chunks 3-4: proportionate additional due diligence on capacity and capability, e.g. site visits, clarification questions or supplier presentations.",
+      "label_status": "ai_drafted_unverified"
+    },
+    {
+      "id": "ch-test-04",
+      "split": "test",
+      "design": "paraphrase",
+      "question": "What should buyers do when a service that isn't marketed as AI will still rely on machine learning?",
+      "answerable": true,
+      "expected_citations": ["[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#5]"],
+      "rationale": "Chunk 5: AI is increasingly used in 'non-AI' services; commercial teams may require suppliers to declare it and give details.",
+      "label_status": "ai_drafted_unverified"
+    },
+    {
+      "id": "ch-test-05",
+      "split": "test",
+      "design": "paraphrase",
+      "question": "If a meeting tool automatically writes up minutes using AI, what should the contract say about that data?",
+      "answerable": true,
+      "expected_citations": [
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#6]",
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#7]"
+      ],
+      "rationale": "Chunks 6-7: contractual terms should make clear that videoconference data is appropriately managed and not used for training unless agreed in writing.",
+      "label_status": "ai_drafted_unverified"
+    },
+    {
+      "id": "ch-test-06",
+      "split": "test",
+      "design": "paraphrase",
+      "question": "Should officials let an AI system make the final call on decisions?",
+      "answerable": true,
+      "expected_citations": ["[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#8]"],
+      "rationale": "Chunk 8: decisions should be made with the support of AI systems, not a reliance upon them.",
+      "label_status": "ai_drafted_unverified"
+    },
+    {
+      "id": "ch-test-07",
+      "split": "test",
+      "design": "lexical_trap",
+      "question": "What four values does the Turing Institute guidance name?",
+      "answerable": true,
+      "expected_citations": ["[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#13]"],
+      "rationale": "Chunk 13 lists the FAST Track Principles: Fairness, Accountability, Sustainability and Transparency. Trap: chunk 12 also names the Turing Institute but not the four values.",
+      "label_status": "ai_drafted_unverified"
+    },
+    {
+      "id": "ch-test-08",
+      "split": "test",
+      "design": "paraphrase",
+      "question": "Can buyers treat vendors differently based on how they answer the AI questions?",
+      "answerable": true,
+      "expected_citations": ["[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#15]"],
+      "rationale": "Chunk 15: contracting authorities must not discriminate against suppliers in using these questions or interpreting responses.",
+      "label_status": "ai_drafted_unverified"
+    },
+    {
+      "id": "ch-test-09",
+      "split": "test",
+      "design": "paraphrase",
+      "question": "How is content-creating AI different from earlier kinds of AI?",
+      "answerable": true,
+      "expected_citations": [
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#7]",
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#10]",
+        "[ppn_017_improving_transparency_of_ai_use_in_procurement.txt#11]"
+      ],
+      "rationale": "Chunk 7: unlike previous forms of AI, generative AI produces new content. Chunks 10-11 repeat the contrast with traditional task-specific models.",
+      "label_status": "ai_drafted_unverified"
+    },
+    {
+      "id": "ch-test-10",
+      "split": "test",
+      "design": "paraphrase",
+      "question": "What should happen once an incident is resolved?",
+      "answerable": true,
+      "expected_citations": ["[incident_response_guide.md#0]", "[incident_response_guide.md#1]"],
+      "rationale": "After recovery, document the root cause, corrective action and prevention work (end of chunk 0, all of chunk 1).",
+      "label_status": "ai_drafted_unverified"
+    },
+    {
+      "id": "ch-test-11",
+      "split": "test",
+      "design": "paraphrase",
+      "question": "What should be written down about overruling a model's output?",
+      "answerable": true,
+      "expected_citations": ["[model_risk_review_playbook.md#0]", "[model_risk_review_playbook.md#1]"],
+      "rationale": "Human oversight: document how a person can override or appeal an output (end of chunk 0, start of chunk 1).",
+      "label_status": "ai_drafted_unverified"
+    },
+    {
+      "id": "ch-test-12",
+      "split": "test",
+      "design": "in_domain_unanswerable",
+      "question": "Which named official must sign off on using AI in a tender?",
+      "answerable": false,
+      "expected_citations": [],
+      "rationale": "No document names an approving official for AI use in tenders.",
+      "label_status": "ai_drafted_unverified"
+    },
+    {
+      "id": "ch-test-13",
+      "split": "test",
+      "design": "in_domain_unanswerable",
+      "question": "What is the deadline for reporting an AI incident to the regulator?",
+      "answerable": false,
+      "expected_citations": [],
+      "rationale": "The incident guide covers internal stakeholders; no regulator or deadline appears.",
+      "label_status": "ai_drafted_unverified"
+    },
+    {
+      "id": "ch-test-14",
+      "split": "test",
+      "design": "in_domain_unanswerable",
+      "question": "What encryption standard must suppliers use for training data?",
+      "answerable": false,
+      "expected_citations": [],
+      "rationale": "No encryption requirement appears anywhere.",
+      "label_status": "ai_drafted_unverified"
+    },
+    {
+      "id": "ch-test-15",
+      "split": "test",
+      "design": "in_domain_unanswerable",
+      "question": "What budget is allocated for AI training courses for civil servants?",
+      "answerable": false,
+      "expected_citations": [],
+      "rationale": "Chunk 13 lists training resources but no budget.",
+      "label_status": "ai_drafted_unverified"
+    },
+    {
+      "id": "ch-test-16",
+      "split": "test",
+      "design": "in_domain_unanswerable",
+      "question": "Which large language model does the Cabinet Office recommend for drafting bids?",
+      "answerable": false,
+      "expected_citations": [],
+      "rationale": "No model is recommended; the PPN only discusses risks of LLM use.",
+      "label_status": "ai_drafted_unverified"
+    },
+    {
+      "id": "ch-test-17",
+      "split": "test",
+      "design": "out_of_domain_unanswerable",
+      "question": "Who won the 2018 football World Cup?",
+      "answerable": false,
+      "expected_citations": [],
+      "rationale": "Unrelated to the corpus.",
+      "label_status": "ai_drafted_unverified"
+    }
+  ]
+}

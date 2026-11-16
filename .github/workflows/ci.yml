@@ -23,6 +23,8 @@ jobs:
         run: python scripts/verify_corpus_manifest.py
       - name: Run offline retrieval evaluation
         run: python scripts/evaluate_retrieval.py
+      - name: Check retriever comparison report is current
+        run: python scripts/compare_retrievers.py --check
       - name: Validate generation gate
         run: python scripts/validate_generation.py
       - name: Validate claim JSON Schema and evidence-contract status
