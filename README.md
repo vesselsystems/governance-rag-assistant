@@ -43,7 +43,7 @@ To compare the retrievers yourself: `python scripts/compare_retrievers.py`.
 
 ## Tests and CI
 
-62 tests plus Ruff. CI also re-runs the evaluation and fails if the committed comparison report no longer matches the code.
+63 tests plus Ruff. CI also re-runs the evaluation and fails if the committed comparison report no longer matches the code.
 
 ```bash
 pytest
